@@ -201,7 +201,8 @@ public class JDialogDespacho extends javax.swing.JDialog {
     }//GEN-LAST:event_jBAceptarActionPerformed
 
     private void jBCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBCancelarActionPerformed
-                this.processWindowEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+              
+        this.processWindowEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 
     }//GEN-LAST:event_jBCancelarActionPerformed
 

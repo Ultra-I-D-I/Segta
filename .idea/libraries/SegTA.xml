@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="Segta">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/javax.persistence-2.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/barbecue-1.5-beta1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/RSScaleLabel.jar!/" />
+      <root url="jar://$PROJECT_DIR$/DateChooser.jar!/" />
+      <root url="jar://$PROJECT_DIR$/eclipselink-2.6.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/mysql-connector-java-5.1.49.jar!/" />
+      <root url="jar://$PROJECT_DIR$/mysql-connector-java-8.0.24.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jasperreports.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

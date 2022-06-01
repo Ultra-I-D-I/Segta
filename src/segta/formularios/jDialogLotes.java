@@ -25,6 +25,7 @@ import segta.clases.Cliente;
 import segta.clases.Lote;
 import segta.clases.Contrato;
 import segta.clases.Lotecontrato;
+import segta.clases.Tambor;
 import segta.controladores.LoteJpaController;
 import segta.controladores.TamborJpaController;
 import segta.controladores.exceptions.NonexistentEntityException;
@@ -62,31 +63,34 @@ public class jDialogLotes extends javax.swing.JDialog {
     String control;
     Lotecontrato contrato;
     float sumaNeto = 0;
+    Lote loteN;
 
     public jDialogLotes(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
-        jCBCliente.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                if (value instanceof Cliente) {
-                    Cliente tc = (Cliente) value;
-                    return super.getListCellRendererComponent(list, tc.getRazonSocial(), index, isSelected, cellHasFocus); //To change body of generated methods, choose Tools | Templates.
-
-                }
-                return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus); //To change body of generated methods, choose Tools | Templates.
-            }
-
-        });
-        loteList.clear();
+//        jCBCliente.setRenderer(new DefaultListCellRenderer() {
+//            @Override
+//            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+//                if (value instanceof Cliente) {
+//                    Cliente tc = (Cliente) value;
+//                    return super.getListCellRendererComponent(list, tc.getRazonSocial(), index, isSelected, cellHasFocus); //To change body of generated methods, choose Tools | Templates.
+//
+//                }
+//                return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus); //To change body of generated methods, choose Tools | Templates.
+//            }
+//
+//        });
+        tamborList.clear();
         desactivarDatos();
-        DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
-        tcr.setHorizontalAlignment(SwingConstants.CENTER);
-        jTableLote.getColumnModel().getColumn(0).setCellRenderer(tcr);
-        jTableLote.getColumnModel().getColumn(1).setCellRenderer(tcr);
-        jTableLote.getColumnModel().getColumn(3).setCellRenderer(tcr);
-        jTableLote.getColumnModel().getColumn(4).setCellRenderer(tcr);
+//        DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
+//        tcr.setHorizontalAlignment(SwingConstants.CENTER);
+//        jTableLote.getColumnModel().getColumn(0).setCellRenderer(tcr);
+//        jTableLote.getColumnModel().getColumn(2).setCellRenderer(tcr);
+//        jTableLote.getColumnModel().getColumn(3).setCellRenderer(tcr);
+//        jTableLote.getColumnModel().getColumn(4).setCellRenderer(tcr);
+//        jTableLote.getColumnModel().getColumn(5).setCellRenderer(tcr);
+//        jTableLote.getColumnModel().getColumn(6).setCellRenderer(tcr);
 
     }
 
@@ -110,15 +114,10 @@ public class jDialogLotes extends javax.swing.JDialog {
         contratoList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : contratoQuery.getResultList();
         loteQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT l FROM Lote l");
         loteList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() :  org.jdesktop.observablecollections.ObservableCollections.observableList(loteQuery.getResultList());
+        tamborQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT t FROM Tambor t ");
+        tamborList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() :  org.jdesktop.observablecollections.ObservableCollections.observableList(tamborQuery.getResultList());
+        LoteNumeroTambor = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT l FROM Lote l WHERE l.lote =  :numeroTambor");
         jPanel3 = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTableContrato = new javax.swing.JTable();
-        jCBCliente = new javax.swing.JComboBox<>();
-        jLabel3 = new javax.swing.JLabel();
-        jBBuscar = new javax.swing.JButton();
-        jLabel4 = new javax.swing.JLabel();
-        jCBMercado = new javax.swing.JComboBox<>();
         jPanelTabla = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableLote = new javax.swing.JTable();
@@ -136,6 +135,11 @@ public class jDialogLotes extends javax.swing.JDialog {
         jBAceptar = new javax.swing.JButton();
         jBCancelar = new javax.swing.JButton();
         jBAnalisis1 = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTableTambores = new javax.swing.JTable();
+        jLabel6 = new javax.swing.JLabel();
+        jTFNetoLote = new javax.swing.JTextField();
         jBVolver = new javax.swing.JButton();
         jDialogDescargasFondo = new javax.swing.JLabel();
 
@@ -152,143 +156,33 @@ public class jDialogLotes extends javax.swing.JDialog {
 
         jPanel3.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Contratos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
-
-        jTableContrato.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-
-        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, lotecontratoList, jTableContrato);
-        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${idContrato.numero}"));
-        columnBinding.setColumnName("Contrato");
-        columnBinding.setColumnClass(String.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${item}"));
-        columnBinding.setColumnName("Item");
-        columnBinding.setColumnClass(Integer.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${idContrato.idCliente.razonSocial}"));
-        columnBinding.setColumnName("Cliente");
-        columnBinding.setColumnClass(String.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${color}"));
-        columnBinding.setColumnName("Color");
-        columnBinding.setColumnClass(String.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${idContrato.homogeneizada}"));
-        columnBinding.setColumnName("Homogeneizada");
-        columnBinding.setColumnClass(Boolean.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${idContrato.tamborNuevo}"));
-        columnBinding.setColumnName("Tambor Nuevo");
-        columnBinding.setColumnClass(Boolean.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${cantLotes}"));
-        columnBinding.setColumnName("Lotes");
-        columnBinding.setColumnClass(Integer.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${maxTambores}"));
-        columnBinding.setColumnName("Neto");
-        columnBinding.setColumnClass(Integer.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${fechaEntrega}"));
-        columnBinding.setColumnName("Fecha Entrega");
-        columnBinding.setColumnClass(java.util.Date.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${idContrato.mercado}"));
-        columnBinding.setColumnName("Mercado");
-        columnBinding.setColumnClass(String.class);
-        bindingGroup.addBinding(jTableBinding);
-        jTableBinding.bind();
-        jTableContrato.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTableContratoMouseClicked(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                jTableContratoMouseReleased(evt);
-            }
-        });
-        jTableContrato.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                jTableContratoKeyReleased(evt);
-            }
-        });
-        jScrollPane2.setViewportView(jTableContrato);
-
-        jCBCliente.addItem("Todos");
-
-        org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, clienteList, jCBCliente);
-        bindingGroup.addBinding(jComboBoxBinding);
-
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel3.setText("CLIENTE");
-
-        jBBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/buscar icono.png"))); // NOI18N
-        jBBuscar.setText("BUSCAR");
-        jBBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBBuscarActionPerformed(evt);
-            }
-        });
-
-        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel4.setText("CONTRATO");
-
-        jCBMercado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Interno", "Externo", " " }));
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCBCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCBMercado, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jBBuscar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jCBCliente)
-                    .addComponent(jBBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel4)
-                    .addComponent(jCBMercado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
         jPanelTabla.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Lotes", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
 
         jTableLote.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
 
-        jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, loteList, jTableLote);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${lote}"));
+        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, loteList, jTableLote);
+        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${lote}"));
         columnBinding.setColumnName("Lote");
         columnBinding.setColumnClass(String.class);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${netoLote}"));
-        columnBinding.setColumnName("Neto");
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${despacho}"));
         columnBinding.setColumnName("Despacho");
         columnBinding.setColumnClass(java.util.Date.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${remito}"));
         columnBinding.setColumnName("Remito");
         columnBinding.setColumnClass(String.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${cantTambores}"));
         columnBinding.setColumnName("Tambores");
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${idLoteContrato.idContrato.numero}"));
+        columnBinding.setColumnName("Contrato");
+        columnBinding.setColumnClass(String.class);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${camion}"));
         columnBinding.setColumnName("Camion");
         columnBinding.setColumnClass(String.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${descripcion}"));
         columnBinding.setColumnName("Descripcion");
         columnBinding.setColumnClass(String.class);
@@ -411,21 +305,22 @@ public class jDialogLotes extends javax.swing.JDialog {
         jPanelDatos.setLayout(jPanelDatosLayout);
         jPanelDatosLayout.setHorizontalGroup(
             jPanelDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelDatosLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jBAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(11, 11, 11))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelDatosLayout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(jPanelDatosLayout.createSequentialGroup()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jTFNumeroLote, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTFDescripcion, javax.swing.GroupLayout.DEFAULT_SIZE, 715, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(52, 52, 52)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanelDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelDatosLayout.createSequentialGroup()
+                        .addComponent(jBAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jBCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(11, 11, 11))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelDatosLayout.createSequentialGroup()
+                        .addComponent(jTFDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 794, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         jPanelDatosLayout.setVerticalGroup(
             jPanelDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -483,8 +378,8 @@ public class jDialogLotes extends javax.swing.JDialog {
             jPanelTablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelTablaLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanelDatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelDatos, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelTablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -498,6 +393,54 @@ public class jDialogLotes extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
+        jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tamborList, jTableTambores);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${numero}"));
+        columnBinding.setColumnName("Número");
+        columnBinding.setColumnClass(Integer.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${neto}"));
+        columnBinding.setColumnName("Neto");
+        columnBinding.setColumnClass(Float.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${bruto}"));
+        columnBinding.setColumnName("Bruto");
+        columnBinding.setColumnClass(Float.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${tara}"));
+        columnBinding.setColumnName("Tara");
+        columnBinding.setColumnClass(Float.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${idSector.nombre}"));
+        columnBinding.setColumnName("Grupo");
+        columnBinding.setColumnClass(String.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${idColor.color}"));
+        columnBinding.setColumnName("Color");
+        columnBinding.setColumnClass(String.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${humedad}"));
+        columnBinding.setColumnName("Humedad");
+        columnBinding.setColumnClass(Float.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${dextrina}"));
+        columnBinding.setColumnName("Dextrina");
+        columnBinding.setColumnClass(Float.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${idProveedor.razonSocial}"));
+        columnBinding.setColumnName("Apicultor");
+        columnBinding.setColumnClass(String.class);
+        columnBinding.setEditable(false);
+        bindingGroup.addBinding(jTableBinding);
+        jTableBinding.bind();
+        jScrollPane3.setViewportView(jTableTambores);
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel6.setText("NETO DEL LOTE");
+
+        jTFNetoLote.setEditable(false);
+        jTFNetoLote.setBackground(new java.awt.Color(255, 255, 255));
+        jTFNetoLote.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+
         jBVolver.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/volver icono.png"))); // NOI18N
         jBVolver.setText("VOLVER");
         jBVolver.addActionListener(new java.awt.event.ActionListener() {
@@ -506,33 +449,58 @@ public class jDialogLotes extends javax.swing.JDialog {
             }
         });
 
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTFNetoLote, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jBVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTFNetoLote, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jBVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16))
+        );
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(1005, 1005, 1005)
-                        .addComponent(jBVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanelTabla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanelTabla, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanelTabla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(58, 58, 58))
         );
 
-        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 20, 1170, 670));
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, -1, -1));
 
         jDialogDescargasFondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/fondo dialog.png"))); // NOI18N
         getContentPane().add(jDialogDescargasFondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1370, 770));
@@ -543,14 +511,13 @@ public class jDialogLotes extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     public void actualizarTabla() {
-        jTFNumeroLote.setText("");
-        jTFDescripcion.setText("");
-        //this.jTableLote.removeAll();
-        Query queryC = em.createQuery("SELECT l FROM Lote l WHERE l.idLoteContrato =:contratoLote").setParameter("contratoLote", contrato);
-        loteQuery = java.beans.Beans.isDesignTime() ? null : queryC;
+
+        tamborList.clear();
+        tamborList.addAll(tamborQuery.getResultList());
+        loteQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT l FROM Lote l");
         loteList.clear();
         loteList.addAll(loteQuery.getResultList());
-
+        jTFNetoLote.setText(NetoLote().toString());
     }
 
     private void activarDatos() {
@@ -578,21 +545,22 @@ public class jDialogLotes extends javax.swing.JDialog {
     }
     private void jTableLoteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableLoteMouseClicked
 
+        lote = loteList.get(jTableLote.getSelectedRow());
+        Query queryC = em.createQuery("SELECT t FROM Tambor t WHERE t.idLote =:lote").setParameter("lote", lote);
+        tamborQuery = java.beans.Beans.isDesignTime() ? null : queryC;
+        tamborList.clear();
+        tamborList.addAll(tamborQuery.getResultList());
 
     }//GEN-LAST:event_jTableLoteMouseClicked
 
     private void jBAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAgregarActionPerformed
 
-        if (this.jTableContrato.getSelectedRowCount() == 1) {
-
-            activarDatos();
-            desactivarTabla();
-            jTFNumeroLote.setText("");
-            jTFDescripcion.setText("");
-            control = "agregar";
-        } else {
-            JOptionPane.showMessageDialog(null, "Debe seleccionar un contrato", "Validación", JOptionPane.WARNING_MESSAGE);
-        }
+        activarDatos();
+        desactivarTabla();
+        jTFNumeroLote.setText("");
+        jTFDescripcion.setText("");
+        jTFNumeroLote.requestFocus();
+        control = "agregar";
 
     }//GEN-LAST:event_jBAgregarActionPerformed
 
@@ -616,7 +584,7 @@ public class jDialogLotes extends javax.swing.JDialog {
 
         if (this.jTableLote.getSelectedRowCount() == 1) {
             Lote lo = loteList.get(jTableLote.getSelectedRow());
-            if (lo.getTamborCollection().size() != 0) {
+            if (!lo.getTamborCollection().isEmpty()) {
 
                 JOptionPane.showMessageDialog(rootPane, "No se puede eliminar el Lote - Tambores asociados");
                 actualizarTabla();
@@ -645,14 +613,17 @@ public class jDialogLotes extends javax.swing.JDialog {
     private void jBAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAceptarActionPerformed
 
         Lote nuevoLote = new Lote();
+        Lote numeroLote = new Lote();
 
-        if (jTFNumeroLote.getText() == "") {
+        if (jTFNumeroLote.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Completar Numero de Lote");
             jTFNumeroLote.requestFocus();
         } else if (control == "agregar") {
-            loteQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT l FROM Lote l WHERE l.lote =  '" + jTFNumeroLote.getText() + "'");
+//            loteQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT l FROM Lote l WHERE l.lote =  '" + jTFNumeroLote.getText() + "'");
+            numeroLote.setLote(jTFNumeroLote.getText());
+            LoteNumeroTambor.setParameter("numeroTambor", numeroLote.getLote());
 
-            if (!loteQuery.getResultList().isEmpty()) {
+            if (!LoteNumeroTambor.getResultList().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Numero de Lote ya existe");
                 jTFNumeroLote.requestFocus();
             } else {
@@ -660,7 +631,7 @@ public class jDialogLotes extends javax.swing.JDialog {
                     jTFDescripcion.setText("*");
                 }
                 nuevoLote.setLote(jTFNumeroLote.getText());
-                nuevoLote.setIdLoteContrato(contrato);
+//                nuevoLote.setIdLoteContrato(contrato);
                 nuevoLote.setDescripcion(jTFDescripcion.getText());
 
                 controladorL.create(nuevoLote);
@@ -669,14 +640,14 @@ public class jDialogLotes extends javax.swing.JDialog {
                 jTFNumeroLote.setText("");
                 jTFDescripcion.setText("");
 
-                actualizarTabla();
                 desactivarDatos();
                 activarTabla();
+                actualizarTabla();
             }
         } else if (control == "editar") {
-            
-            loteQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT l FROM Lote l WHERE l.lote =  '" + jTFNumeroLote.getText() + "' AND l.idLote != "+ lote.getIdLote());
-            
+
+            loteQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT l FROM Lote l WHERE l.lote =  '" + jTFNumeroLote.getText() + "' AND l.idLote != " + lote.getIdLote());
+
             if (!loteQuery.getResultList().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Numero de Lote ya exite");
                 jTFNumeroLote.requestFocus();
@@ -685,29 +656,31 @@ public class jDialogLotes extends javax.swing.JDialog {
                     jTFDescripcion.setText("*");
                 }
 
-            lote.setLote(jTFNumeroLote.getText());
-            lote.setDescripcion(jTFDescripcion.getText());
+                lote.setLote(jTFNumeroLote.getText());
+                lote.setDescripcion(jTFDescripcion.getText());
 
-            try {
-                controladorL.edit(lote);
-                JOptionPane.showMessageDialog(null, "Lote actualizado");
+                try {
+                    controladorL.edit(lote);
+                    JOptionPane.showMessageDialog(null, "Lote actualizado");
+                    loteQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT l FROM Lote l");
+                    actualizarTabla();
+                } catch (NonexistentEntityException ex) {
+                    Logger.getLogger(jDialogDescargas.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                    Logger.getLogger(jDialogDescargas.class.getName()).log(Level.SEVERE, null, ex);
+                }
+//                actualizarTabla();
+                desactivarDatos();
+                activarTabla();
 
-            } catch (NonexistentEntityException ex) {
-                Logger.getLogger(jDialogDescargas.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (Exception ex) {
-                Logger.getLogger(jDialogDescargas.class.getName()).log(Level.SEVERE, null, ex);
             }
-            actualizarTabla();
-            desactivarDatos();
-            activarTabla();
-        }
         }
     }//GEN-LAST:event_jBAceptarActionPerformed
 
     private void jBCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBCancelarActionPerformed
-        actualizarTabla();
         desactivarDatos();
         activarTabla();
+        actualizarTabla();
     }//GEN-LAST:event_jBCancelarActionPerformed
 
     private void jBDespachoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBDespachoActionPerformed
@@ -715,17 +688,22 @@ public class jDialogLotes extends javax.swing.JDialog {
         if (this.jTableLote.getSelectedRowCount() == 1) {
             lote = loteList.get(jTableLote.getSelectedRow());
             if (lote.getDespacho() == null) {
-
+                loteQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT l FROM Lote l WHERE l.idLote = " + lote.getIdLote());
+                loteList.addAll(loteQuery.getResultList());
                 if (lote.getTamborCollection().isEmpty()) {
                     JOptionPane.showMessageDialog(rootPane, "EL Lote no tiene tambores");
                     jTableLote.requestFocus();
                 } else {
                     new JDialogDespacho(this, true, lote).setVisible(true);
-                    actualizarTabla();
+                    loteQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT l FROM Lote l");
+                    loteList.addAll(loteQuery.getResultList());
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "El Lote ya se encuentra despachado", "Validación", JOptionPane.WARNING_MESSAGE);
             }
+        } else if (lote.getIdLoteContrato() == null) {
+            JOptionPane.showMessageDialog(null, "El lote debe tener contrato asignado", "Validación", JOptionPane.WARNING_MESSAGE);
+            jTableLote.requestFocus();
         } else {
             JOptionPane.showMessageDialog(null, "Debe seleccionar un Lote", "Validación", JOptionPane.WARNING_MESSAGE);
         }
@@ -742,38 +720,38 @@ public class jDialogLotes extends javax.swing.JDialog {
             lote = loteList.get(jTableLote.getSelectedRow());
             if (lote.getDespacho() == null) {
                 new jDialogSelecionarTambor(this, true, lote).setVisible(true);
-                actualizarTabla();
             } else {
                 JOptionPane.showMessageDialog(null, "El Lote ya se encuentra despachado", "Validación", JOptionPane.WARNING_MESSAGE);
             }
+            actualizarTabla();
         }
-    }//GEN-LAST:event_jBSeleccionarTamboresActionPerformed
 
+    }//GEN-LAST:event_jBSeleccionarTamboresActionPerformed
+    public String NetoLote() {
+        float netoLotef = 0;
+        loteN = controladorL.findLote(lote.getIdLote());;
+        for (Tambor t : this.loteN.getTamborCollection()) {
+            netoLotef = netoLotef + t.getNeto();
+        }
+        String netoLote = Float.toString(netoLotef);
+        return netoLote;
+    }
     private void jBAnalisisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAnalisisActionPerformed
         if (this.jTableLote.getSelectedRowCount() != 1) {
             JOptionPane.showMessageDialog(null, "Debe seleccionar un Lote");
             jTableLote.requestFocus();
-
+        } else if (lote.getIdLoteContrato() == null) {
+            JOptionPane.showMessageDialog(null, "El lote debe tener contrato asignado", "Validación", JOptionPane.WARNING_MESSAGE);
+            jTableLote.requestFocus();
         } else {
             lote = loteList.get(jTableLote.getSelectedRow());
             new jDialogAnalisis(this, false, lote).setVisible(true);
-
         }
     }//GEN-LAST:event_jBAnalisisActionPerformed
 
     private void jBVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBVolverActionPerformed
         this.processWindowEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }//GEN-LAST:event_jBVolverActionPerformed
-
-    private void jTableContratoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableContratoMouseClicked
-
-
-    }//GEN-LAST:event_jTableContratoMouseClicked
-
-    private void jTableContratoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTableContratoKeyReleased
-        // TODO add your handling code here:
-        seleccionaContrato();
-    }//GEN-LAST:event_jTableContratoKeyReleased
 
     private void jBAnalisis1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAnalisis1ActionPerformed
         if (this.jTableLote.getSelectedRowCount() != 1) {
@@ -793,54 +771,20 @@ public class jDialogLotes extends javax.swing.JDialog {
     }//GEN-LAST:event_jBAnalisis1ActionPerformed
 
     private void jTableLoteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableLoteMousePressed
-        // TODO add your handling code here:
+        seleccionaLote();
     }//GEN-LAST:event_jTableLoteMousePressed
 
-    private void jTableContratoMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableContratoMouseReleased
-        // TODO add your handling code here:
-        seleccionaContrato();
-    }//GEN-LAST:event_jTableContratoMouseReleased
-
     private void jTableLoteMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableLoteMouseReleased
-        // TODO add your handling code here:
         seleccionaLote();
     }//GEN-LAST:event_jTableLoteMouseReleased
 
     private void jTableLoteKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTableLoteKeyReleased
-        // TODO add your handling code here:
         seleccionaLote();
     }//GEN-LAST:event_jTableLoteKeyReleased
 
-    private void jBBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBBuscarActionPerformed
-
-        Cliente cliSel = clienteList.get(jCBCliente.getSelectedIndex());
-
-        Query ql;
-        String queryTxt = "SELECT l FROM Lotecontrato l WHERE l.estado='abierto' ";
-
-        if (!cliSel.getRazonSocial().equals("Todos")) {
-            queryTxt = queryTxt + " AND l.idContrato.idCliente = :pCliente ";
-        }
-        if (jCBMercado.getSelectedItem() != "Todos") {
-            queryTxt = queryTxt + " AND l.idContrato.mercado = :pMercado ";
-        }
-        ql = em.createQuery(queryTxt);
-
-        if (jCBMercado.getSelectedItem() != "Todos") {
-            ql.setParameter("pMercado", jCBMercado.getSelectedItem());
-        }
-        if (!cliSel.getRazonSocial().equals("Todos")) {
-            ql.setParameter("pCliente", cliSel);
-        }
-
-        lotecontratoQuery = java.beans.Beans.isDesignTime() ? null : ql;
-        lotecontratoList.clear();
-        lotecontratoList.addAll(lotecontratoQuery.getResultList());
-    }//GEN-LAST:event_jBBuscarActionPerformed
-
     private void seleccionaContrato() {
-        contrato = lotecontratoList.get(jTableContrato.getSelectedRow());
-        actualizarTabla();
+//        contrato = lotecontratoList.get(jTableContrato.getSelectedRow());
+//        actualizarTabla();
     }
 
     private void seleccionaLote() {
@@ -848,6 +792,7 @@ public class jDialogLotes extends javax.swing.JDialog {
         lote = loteList.get(jTableLote.getSelectedRow());
         jTFNumeroLote.setText(lote.getLote());
         jTFDescripcion.setText(lote.getDescripcion());
+        jTFNetoLote.setText(NetoLote().toString());
     }
 
     /**
@@ -896,6 +841,7 @@ public class jDialogLotes extends javax.swing.JDialog {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.persistence.Query LoteNumeroTambor;
     private javax.persistence.EntityManager SegTAPUEntityManager;
     private java.util.List<segta.clases.Cliente> clienteList;
     private javax.persistence.Query clienteQuery;
@@ -906,34 +852,33 @@ public class jDialogLotes extends javax.swing.JDialog {
     private javax.swing.JButton jBAnalisis;
     private javax.swing.JButton jBAnalisis1;
     private javax.swing.JButton jBBorrar;
-    private javax.swing.JButton jBBuscar;
     private javax.swing.JButton jBCancelar;
     private javax.swing.JButton jBDespacho;
     private javax.swing.JButton jBEditar;
     private javax.swing.JButton jBSeleccionarTambores;
     private javax.swing.JButton jBVolver;
-    private javax.swing.JComboBox<String> jCBCliente;
-    private javax.swing.JComboBox<String> jCBMercado;
     private javax.swing.JLabel jDialogDescargasFondo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanelDatos;
     private javax.swing.JPanel jPanelTabla;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTFDescripcion;
+    private javax.swing.JTextField jTFNetoLote;
     private javax.swing.JTextField jTFNumeroLote;
-    private javax.swing.JTable jTableContrato;
     private javax.swing.JTable jTableLote;
+    private javax.swing.JTable jTableTambores;
     private java.util.List<segta.clases.Lote> loteList;
     private javax.persistence.Query loteQuery;
     private java.util.List<segta.clases.Lotecontrato> lotecontratoList;
     private javax.persistence.Query lotecontratoQuery;
     private javax.swing.ButtonGroup mercado;
+    private java.util.List<segta.clases.Tambor> tamborList;
+    private javax.persistence.Query tamborQuery;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 

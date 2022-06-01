@@ -9,6 +9,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,6 +26,7 @@ import segta.clases.Lote;
 import segta.clases.Sector;
 import segta.clases.Tambor;
 import segta.controladores.ClienteJpaController;
+import segta.controladores.LoteJpaController;
 import segta.controladores.TamborJpaController;
 import static segta.formularios.inicio.cambioSector;
 
@@ -42,11 +45,11 @@ public class jDialogSelecionarTambor extends javax.swing.JDialog {
     public static void centerComponent(Component c) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = c.getSize();
-
+        
         if (frameSize.height > screenSize.height) {
             frameSize.height = screenSize.height;
         }
-
+        
         if (frameSize.width > screenSize.width) {
             frameSize.width = screenSize.width;
         }
@@ -59,8 +62,10 @@ public class jDialogSelecionarTambor extends javax.swing.JDialog {
     EntityManager em = emf.createEntityManager();
     TamborJpaController controladorT = new TamborJpaController(emf);
     ClienteJpaController controladorC = new ClienteJpaController(emf);
+    LoteJpaController controladorL = new LoteJpaController(emf);
     Lote lote;
-
+    Lote loteN;
+    
     public jDialogSelecionarTambor(javax.swing.JDialog parent, boolean modal, Lote lo) {
         super(parent, modal);
         lote = lo;
@@ -70,7 +75,6 @@ public class jDialogSelecionarTambor extends javax.swing.JDialog {
 //CENTRA LOS DATOS DE LA TABLA
         DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
         tcr.setHorizontalAlignment(SwingConstants.CENTER);
-
         jTableLote.getColumnModel().getColumn(0).setCellRenderer(tcr);
         jTableLote.getColumnModel().getColumn(1).setCellRenderer(tcr);
         jTableLote.getColumnModel().getColumn(2).setCellRenderer(tcr);
@@ -83,9 +87,10 @@ public class jDialogSelecionarTambor extends javax.swing.JDialog {
 //COMPLETA EL PANEL CON LOS DATOS DEL LOTE
 //        Cliente clienteLote = controladorC.findCliente(lote);
         jTFNumeroLote.setText(lote.getLote());
-        jTFColor.setText(lote.getIdLoteContrato().getColor());
-        this.jCheckBox.setSelected(lote.getIdLoteContrato().getIdContrato().getTamborNuevo());
-        this.jCheckBoxHomo.setSelected(lote.getIdLoteContrato().getIdContrato().getHomogeneizada());
+        jTFNetoLote.setText(NetoLote());
+////        jTFColor.setText(lote.getIdLoteContrato().getColor());
+//        this.jCheckBox.setSelected(lote.getIdLoteContrato().getIdContrato().getTamborNuevo());
+//        this.jCheckBoxHomo.setSelected(lote.getIdLoteContrato().getIdContrato().getHomogeneizada());
 
     }
 
@@ -114,6 +119,8 @@ public class jDialogSelecionarTambor extends javax.swing.JDialog {
         jTFColor = new javax.swing.JTextField();
         jCheckBox = new javax.swing.JCheckBox();
         jCheckBoxHomo = new javax.swing.JCheckBox();
+        jLabel6 = new javax.swing.JLabel();
+        jTFNetoLote = new javax.swing.JTextField();
         jBVolver = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -154,20 +161,14 @@ public class jDialogSelecionarTambor extends javax.swing.JDialog {
         jCheckBox.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jCheckBox.setText("TAMBOR NUEVO");
         jCheckBox.setEnabled(false);
-        jCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBoxActionPerformed(evt);
-            }
-        });
 
         jCheckBoxHomo.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jCheckBoxHomo.setText("HOMOGENEIZADA");
         jCheckBoxHomo.setEnabled(false);
-        jCheckBoxHomo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBoxHomoActionPerformed(evt);
-            }
-        });
+
+        jLabel6.setText("NETO DEL LOTE");
+
+        jTFNetoLote.setEditable(false);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -186,7 +187,11 @@ public class jDialogSelecionarTambor extends javax.swing.JDialog {
                 .addComponent(jCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxHomo)
-                .addGap(19, 19, 19))
+                .addGap(45, 45, 45)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTFNetoLote, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -198,7 +203,9 @@ public class jDialogSelecionarTambor extends javax.swing.JDialog {
                     .addComponent(jTFColor, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jCheckBox)
-                    .addComponent(jCheckBoxHomo))
+                    .addComponent(jCheckBoxHomo)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTFNetoLote, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19))
         );
 
@@ -210,9 +217,9 @@ public class jDialogSelecionarTambor extends javax.swing.JDialog {
             }
         });
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Tambores Loteados"));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Tambores Clasificados"));
 
-        jTableClasificado.setAutoCreateRowSorter(true);
+        jTableClasificado.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tamborListClasificado, jTableClasificado);
         org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${numero}"));
@@ -222,7 +229,6 @@ public class jDialogSelecionarTambor extends javax.swing.JDialog {
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${neto}"));
         columnBinding.setColumnName("Neto");
         columnBinding.setColumnClass(Float.class);
-        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${idColor.color}"));
         columnBinding.setColumnName("Color");
         columnBinding.setColumnClass(String.class);
@@ -245,11 +251,6 @@ public class jDialogSelecionarTambor extends javax.swing.JDialog {
         columnBinding.setEditable(false);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
-        jTableClasificado.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTableClasificadoMouseClicked(evt);
-            }
-        });
         jScrollPane3.setViewportView(jTableClasificado);
 
         jComboBoxSec.addItem("Sin asignar");
@@ -311,7 +312,9 @@ public class jDialogSelecionarTambor extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Tambores del Grupo"));
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Tambores del Lote"));
+
+        jTableLote.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tamborListLote, jTableLote);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${numero}"));
@@ -340,11 +343,6 @@ public class jDialogSelecionarTambor extends javax.swing.JDialog {
         columnBinding.setEditable(false);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
-        jTableLote.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTableLoteMouseClicked(evt);
-            }
-        });
         jScrollPane4.setViewportView(jTableLote);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -431,93 +429,85 @@ public class jDialogSelecionarTambor extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTableClasificadoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableClasificadoMouseClicked
-
-
-    }//GEN-LAST:event_jTableClasificadoMouseClicked
-
-    private void jTableLoteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableLoteMouseClicked
-
-    }//GEN-LAST:event_jTableLoteMouseClicked
-
     private void jBVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBVolverActionPerformed
         this.processWindowEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }//GEN-LAST:event_jBVolverActionPerformed
-
-    private void jCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBoxActionPerformed
-
-    private void jCheckBoxHomoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxHomoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBoxHomoActionPerformed
-
+    public String NetoLote() {
+        float netoLotef = 0;        
+        loteN = controladorL.findLote(lote.getIdLote());;
+        for (Tambor t : this.loteN.getTamborCollection()) {
+            netoLotef = netoLotef + t.getNeto();
+        }
+        String netoLote = Float.toString(netoLotef);
+        return netoLote;
+    }
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Query ql;
         int numero = 0;
         boolean haynumero = false;
         String queryTxt = "SELECT t FROM Tambor t WHERE t.estado = 'clasificado'";
         Sector secSel = sectorList.get(jComboBoxSec.getSelectedIndex());
-
+        
         if (!jTamborBuscar.getText().isEmpty()) {
             try {
                 numero = Integer.parseInt(jTamborBuscar.getText());
                 haynumero = true;
-
+                
             } catch (Exception e) {
                 haynumero = false;
             }
         }
-
+        
         if (haynumero) {
             queryTxt = queryTxt + " AND t.numero like " + numero + "";
         }
-
+        
         if (!secSel.getNombre().equals("Todos")) {
             queryTxt = queryTxt + " AND t.idSector=:pSector ";
         }
-
+        
         queryTxt = queryTxt + " ORDER BY t.numero";
-
+        
         ql = em.createQuery(queryTxt);
-
+        
         if (!secSel.getNombre().equals("Todos")) {
             ql.setParameter("pSector", secSel);
         }
-
+        
         tamborQueryClasificado = java.beans.Beans.isDesignTime() ? null : ql;
         tamborListClasificado.clear();
         tamborListClasificado.addAll(tamborQueryClasificado.getResultList());
-
+        
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButtonAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarActionPerformed
-
+        
         if (this.jTableClasificado.getSelectedRowCount() == 0) {
             JOptionPane.showMessageDialog(null, "Debe seleccionar un tambor");
             jTableClasificado.requestFocus();
-
+            
         } else {
-
+            
             for (int i = 0; i < jTableClasificado.getRowCount(); i++) {
-
+                
                 if (jTableClasificado.isRowSelected(i)) {
-
+                    
                     Tambor tamborSel = (Tambor) tamborListClasificado.get(i);
-
+                    
                     tamborSel.setEstado("loteado");
                     tamborSel.setIdLote(lote);
                     
-
                     try {
                         controladorT.edit(tamborSel);
                     } catch (Exception ex) {
                         Logger.getLogger(jDialogSelecionarTambor.class.getName()).log(Level.SEVERE, null, ex);
                     }
-
+                    
                 }
             }
+            NetoLote();
+            jTFNetoLote.setText(NetoLote());
             tamborListClasificado.clear();
             tamborListClasificado.addAll(tamborQueryClasificado.getResultList());
             tamborListLote.clear();
@@ -527,109 +517,83 @@ public class jDialogSelecionarTambor extends javax.swing.JDialog {
     }//GEN-LAST:event_jButtonAgregarActionPerformed
 
     private void jButtonQuitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonQuitarActionPerformed
-
+        
         if (this.jTableLote.getSelectedRowCount() == 0) {
             JOptionPane.showMessageDialog(null, "Debe seleccionar un tambor");
-            jTableClasificado.requestFocus();
-
+            jTableLote.requestFocus();
+            
         } else {
             
-            JComboBox jComboBoxLote = new JComboBox((Vector) sectorList);
-            int input = JOptionPane.showConfirmDialog(this, jComboBoxLote, "Seleccione Grupo", JOptionPane.DEFAULT_OPTION);
-
-            if (input == JOptionPane.OK_OPTION) {
-
-                Sector sectorSel = (Sector) jComboBoxLote.getSelectedItem();
-                Tambor tamborSel = new Tambor();
-                for (int i = 0; i < jTableLote.getRowCount(); i++) {
-
-                    if (jTableLote.isRowSelected(i)) {
-                          
-                        tamborSel = (Tambor) tamborListLote.get(i);
-                        tamborSel.setIdSector(sectorSel);
-                        tamborSel.setEstado("clasificado");
-                        tamborSel.setIdLote(null);
-                        
-                        try {
-                            controladorT.edit(tamborSel);
-
-                        } catch (Exception ex) {
-                            Logger.getLogger(jDialogLaboratorio.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
+            for (int i = 0; i < jTableLote.getRowCount(); i++) {
                 
-                tamborListLote.clear();
-                tamborListLote.addAll(tamborQueryLote.getResultList());
-                tamborListClasificado.clear();
-                tamborListClasificado.addAll(tamborQueryClasificado.getResultList());
-            
-            }
-            /*
-            Tambor tamborSel = (Tambor) tamborListLote.get(jTableLote.getSelectedRow());
-            new JDialogCambiaSector(this, true, tamborSel).setVisible(true);
-            if (cambioSector) {
-
-                tamborSel.setEstado("clasificado");
-                tamborSel.setIdLote(null);
-                try {
-                    controladorT.edit(tamborSel);
-                } catch (Exception ex) {
-                    Logger.getLogger(jDialogSelecionarTambor.class.getName()).log(Level.SEVERE, null, ex);
+                if (jTableLote.isRowSelected(i)) {
+                    
+                    Tambor tamborSel = (Tambor) tamborListLote.get(i);
+                    
+                    tamborSel.setEstado("clasificado");
+                    tamborSel.setIdLote(null);
+                    
+                    try {
+                        controladorT.edit(tamborSel);
+                    } catch (Exception ex) {
+                        Logger.getLogger(jDialogSelecionarTambor.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
                 }
-                tamborListLote.clear();
-                tamborListLote.addAll(tamborQueryLote.getResultList());
-                tamborListClasificado.clear();
-                tamborListClasificado.addAll(tamborQueryClasificado.getResultList());
-                //tamborListClasificado.add(tamborSel);
-            }*/
-        }
-    }//GEN-LAST:event_jButtonQuitarActionPerformed
+            }
+            jTFNetoLote.setText(NetoLote().toString());
+            tamborListClasificado.clear();
+            tamborListClasificado.addAll(tamborQueryClasificado.getResultList());
+            tamborListLote.clear();
+            tamborListLote.addAll(tamborQueryLote.getResultList());
+            //tamborListLote.add(tamborSel);
 
+    }//GEN-LAST:event_jButtonQuitarActionPerformed
+    }
     /**
      * @param args the command line arguments
      */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(jDialogSelecionarTambor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(jDialogSelecionarTambor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(jDialogSelecionarTambor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(jDialogSelecionarTambor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//        //</editor-fold>
-//        //</editor-fold>
-//        //</editor-fold>
-//
-//        /* Create and display the dialog */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                jDialogSelecionarTambor dialog = new jDialogSelecionarTambor(new javax.swing.JDialog(),Lote lo, true);
-//                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-//                    @Override
-//                    public void windowClosing(java.awt.event.WindowEvent e) {
-//                        System.exit(0);
-//                    }
-//                });
-//                dialog.setVisible(true);
-//            }
-//        });
-//    }
+    //    public static void main(String args[]) {
+    //        /* Set the Nimbus look and feel */
+    //        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+    //        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+    //         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+    //         */
+    //        try {
+    //            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+    //                if ("Nimbus".equals(info.getName())) {
+    //                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+    //                    break;
+    //                }
+    //            }
+    //        } catch (ClassNotFoundException ex) {
+    //            java.util.logging.Logger.getLogger(jDialogSelecionarTambor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    //        } catch (InstantiationException ex) {
+    //            java.util.logging.Logger.getLogger(jDialogSelecionarTambor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    //        } catch (IllegalAccessException ex) {
+    //            java.util.logging.Logger.getLogger(jDialogSelecionarTambor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    //        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+    //            java.util.logging.Logger.getLogger(jDialogSelecionarTambor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    //        }
+    //        //</editor-fold>
+    //        //</editor-fold>
+    //        //</editor-fold>
+    //        //</editor-fold>
+    //
+    //        /* Create and display the dialog */
+    //        java.awt.EventQueue.invokeLater(new Runnable() {
+    //            public void run() {
+    //                jDialogSelecionarTambor dialog = new jDialogSelecionarTambor(new javax.swing.JDialog(),Lote lo, true);
+    //                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+    //                    @Override
+    //                    public void windowClosing(java.awt.event.WindowEvent e) {
+    //                        System.exit(0);
+    //                    }
+    //                });
+    //                dialog.setVisible(true);
+    //            }
+    //        });
+    //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.persistence.EntityManager SegTAPUEntityManager;
@@ -645,6 +609,7 @@ public class jDialogSelecionarTambor extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -652,6 +617,7 @@ public class jDialogSelecionarTambor extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTextField jTFColor;
+    private javax.swing.JTextField jTFNetoLote;
     private javax.swing.JTextField jTFNumeroLote;
     private javax.swing.JTable jTableClasificado;
     private javax.swing.JTable jTableLote;

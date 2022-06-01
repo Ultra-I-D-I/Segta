@@ -60,6 +60,7 @@ public class jDialogAnalisis extends javax.swing.JDialog {
         super(parent, modal);
         lote = lo;
         initComponents();
+        
 
         jCBDeterminacion.setRenderer(new DefaultListCellRenderer() {
             @Override

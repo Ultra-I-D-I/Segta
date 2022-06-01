@@ -61,6 +61,7 @@ public class JDialogCambiaContrato extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableContrato = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
+        jBQuitar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -129,6 +130,16 @@ public class JDialogCambiaContrato extends javax.swing.JDialog {
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel2.setText("CONTRATOS");
 
+        jBQuitar.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jBQuitar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/borrar.png"))); // NOI18N
+        jBQuitar.setText("QUITAR");
+        jBQuitar.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jBQuitar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBQuitarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -143,7 +154,9 @@ public class JDialogCambiaContrato extends javax.swing.JDialog {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jBAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(14, 14, 14)
+                        .addComponent(jBQuitar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jBCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -157,7 +170,8 @@ public class JDialogCambiaContrato extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jBCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jBAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBQuitar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(16, 16, 16))
         );
 
@@ -193,11 +207,22 @@ public class JDialogCambiaContrato extends javax.swing.JDialog {
 
     }//GEN-LAST:event_jBCancelarActionPerformed
 
+    private void jBQuitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBQuitarActionPerformed
+        lote.setIdLoteContrato(null);
+        try {
+            controladorL.edit(lote);
+            this.processWindowEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+        } catch (Exception ex) {
+            Logger.getLogger(JDialogCambiaContrato.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jBQuitarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.persistence.EntityManager SegTAPUEntityManager;
     private javax.swing.JButton jBAceptar;
     private javax.swing.JButton jBCancelar;
+    private javax.swing.JButton jBQuitar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

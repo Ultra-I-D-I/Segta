@@ -562,15 +562,16 @@ public class jDialogDescargas extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_jBEditarActionPerformed
     private void actualizarTabla() {
-
+        
+        descargasList.clear();
+        descargasQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT d FROM Descargas d ORDER BY d.idDescargas DESC");
+        descargasList.addAll(descargasQuery.getResultList());        
         jTFCamion.setText("");
         jTFObservaciones.setText("");
         jTFObsTambores.selectAll();
         jTFObsTambores.replaceSelection("");
         jTFCamion.requestFocus();
-        descargasList.clear();
-        descargasQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT d FROM Descargas d ORDER BY d.idDescargas DESC");
-        descargasList.addAll(descargasQuery.getResultList());
+        
     }
 
     private void activarDatos() {
@@ -661,7 +662,7 @@ public class jDialogDescargas extends javax.swing.JDialog {
 
                 try {
                     controladorD.edit(de);
-                    JOptionPane.showMessageDialog(null, "Descarga actualizada");
+                    JOptionPane.showMessageDialog(null, "Descarga actualizada");                    
                     actualizarTabla();
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Error al editar la descarga", "Información", JOptionPane.ERROR_MESSAGE);
@@ -796,9 +797,9 @@ public class jDialogDescargas extends javax.swing.JDialog {
     }//GEN-LAST:event_jBImprimirTamboresActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        
+
         de = descargasList.get(jTable1.getSelectedRow());
-        if(de.getTamborCollection().isEmpty()){
+        if (de.getTamborCollection().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Descarga sin finalizar o en proceso", "Validación", JOptionPane.WARNING_MESSAGE);
         }
         this.jTFObsTambores.setText(de.getObsTambores());

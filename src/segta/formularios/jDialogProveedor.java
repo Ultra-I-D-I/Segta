@@ -75,7 +75,7 @@ public class jDialogProveedor extends javax.swing.JDialog {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         SegTAPUEntityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("SegTAPU").createEntityManager();
-        proveedorQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT p FROM Proveedor p WHERE p.baja = 0 ORDER BY p.razonSocial");
+        proveedorQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT p FROM Proveedor p WHERE p.baja = 0 ORDER BY p.idProveedor");
         proveedorList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : org.jdesktop.observablecollections.ObservableCollections.observableList(proveedorQuery.getResultList());
         provinciaQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT p FROM Provincia p");
         provinciaQuery1 = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT p FROM Provincia p");
@@ -325,7 +325,7 @@ public class jDialogProveedor extends javax.swing.JDialog {
 
         org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, proveedorList, jTableProveedores);
         org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${idProveedor}"));
-        columnBinding.setColumnName("Id Proveedor");
+        columnBinding.setColumnName("Número");
         columnBinding.setColumnClass(Integer.class);
         columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${razonSocial}"));
@@ -346,6 +346,14 @@ public class jDialogProveedor extends javax.swing.JDialog {
         columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${direccion}"));
         columnBinding.setColumnName("Direccion");
+        columnBinding.setColumnClass(String.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${idLocalidad.nombre}"));
+        columnBinding.setColumnName("Localidad");
+        columnBinding.setColumnClass(String.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${idLocalidad.idProvincia.nombre}"));
+        columnBinding.setColumnName("Provincia");
         columnBinding.setColumnClass(String.class);
         columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${acopiador}"));
@@ -369,9 +377,12 @@ public class jDialogProveedor extends javax.swing.JDialog {
         });
         jScrollPane1.setViewportView(jTableProveedores);
         if (jTableProveedores.getColumnModel().getColumnCount() > 0) {
-            jTableProveedores.getColumnModel().getColumn(6).setMinWidth(70);
-            jTableProveedores.getColumnModel().getColumn(6).setPreferredWidth(70);
-            jTableProveedores.getColumnModel().getColumn(6).setMaxWidth(70);
+            jTableProveedores.getColumnModel().getColumn(0).setMinWidth(50);
+            jTableProveedores.getColumnModel().getColumn(0).setPreferredWidth(50);
+            jTableProveedores.getColumnModel().getColumn(0).setMaxWidth(50);
+            jTableProveedores.getColumnModel().getColumn(8).setMinWidth(70);
+            jTableProveedores.getColumnModel().getColumn(8).setPreferredWidth(70);
+            jTableProveedores.getColumnModel().getColumn(8).setMaxWidth(70);
         }
 
         jBAgregar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -549,6 +560,7 @@ public class jDialogProveedor extends javax.swing.JDialog {
     }//GEN-LAST:event_jTextMailActionPerformed
 
     private void jBAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAceptarActionPerformed
+        
         int flagValidacion = 0;
         String razSoc = this.jTextRazonSocial.getText();
         BigInteger cuit = null;
@@ -621,8 +633,9 @@ public class jDialogProveedor extends javax.swing.JDialog {
                     Logger.getLogger(jDialogProveedor.class.getName()).log(Level.SEVERE, null, ex);
                     JOptionPane.showMessageDialog(null, "Error al crear el apicultor", "Información", JOptionPane.ERROR_MESSAGE);
                 }
+            }
 
-            } else {
+            if (tipo.equals("edit")) {
                 prov.setRazonSocial(razSoc);
                 prov.setCuit(cuit);
                 prov.setDireccion(this.jTextDireccion.getText());

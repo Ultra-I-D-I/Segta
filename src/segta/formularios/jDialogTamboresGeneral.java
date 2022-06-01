@@ -9,7 +9,9 @@ import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Period;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -46,10 +48,27 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
     Tambor tamborSel;
     Proveedor provSel;
     List<Tambor> tambor = new ArrayList();
+    Query qlf;
+
+    public static String Fecha() {
+        Date FechaActual = new Date();
+        SimpleDateFormat ForFechaA = new SimpleDateFormat("yyyy-MM-dd");
+        return ForFechaA.format(FechaActual);
+    }
+
+    public static String FechaInicial() {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.MONTH, -6);
+        SimpleDateFormat ForFechaA = new SimpleDateFormat("yyyy-MM-dd");
+        return ForFechaA.format(c.getTime());
+    }
 
     public jDialogTamboresGeneral(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        qlf = em.createQuery("SELECT t FROM Tambor t Where t.estado != 'devuelto' AND t.idDescarga.fecha BETWEEN '" + FechaInicial() + "' AND '" + Fecha() + "' ORDER BY t.numero");
         initComponents();
+        jCBAcopiador.setVisible(false);
+
 //        DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
 //        tcr.setHorizontalAlignment(SwingConstants.CENTER);
 //        jTableTambores.getColumnModel().getColumn(0).setCellRenderer(tcr);
@@ -65,7 +84,6 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
 //        jTableTambores.getColumnModel().getColumn(10).setCellRenderer(tcr);
 //        jTableTambores.getColumnModel().getColumn(11).setCellRenderer(tcr);
 //        jTableTambores.getColumnModel().getColumn(12).setCellRenderer(tcr);
-
     }
 
     /**
@@ -89,9 +107,9 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
         proveedorList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : proveedorQuery.getResultList();
         loteQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT l FROM Lote l");
         loteList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : loteQuery.getResultList();
-        tamborQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT t FROM Tambor t Where t.estado != 'despachado' ORDER BY t.numero");
+        tamborQuery = java.beans.Beans.isDesignTime() ? null : qlf;
         tamborList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() :  org.jdesktop.observablecollections.ObservableCollections.observableList(tamborQuery.getResultList());
-        proveedorQuery1 = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT p FROM Proveedor p");
+        proveedorQuery1 = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT p FROM Proveedor p where p.acopiador = 1");
         proveedorList1 = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : proveedorQuery1.getResultList();
         sectorQuery1 = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT s FROM Sector s ORDER BY s.nombre");
         sectorList1 = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : sectorQuery1.getResultList();
@@ -118,8 +136,12 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jCBEstado = new javax.swing.JComboBox<>();
-        dateChooser = new datechooser.beans.DateChooserCombo();
+        FechaDesde = new datechooser.beans.DateChooserCombo();
         jLabel12 = new javax.swing.JLabel();
+        FechaHasta = new datechooser.beans.DateChooserCombo();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jCBAcopiador = new javax.swing.JComboBox<>();
         jBVolver = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -137,6 +159,8 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
         Cantidad3 = new javax.swing.JLabel();
         jTextHumedad = new javax.swing.JTextField();
         jBCambiarProductor1 = new javax.swing.JButton();
+        jBAsignarLote = new javax.swing.JButton();
+        jBCambiarAcopiador = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         Color c = new Color();
@@ -176,7 +200,6 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
         bindingGroup.addBinding(jComboBoxBinding);
 
         jCBSector.addItem("Todos");
-        jCBSector.addItem("Sin asignar");
 
         jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, sectorList, jCBSector);
         bindingGroup.addBinding(jComboBoxBinding);
@@ -194,6 +217,8 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
 
         jBBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/buscar icono.png"))); // NOI18N
         jBBuscar.setText("BUSCAR");
+        jBBuscar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jBBuscar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jBBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBBuscarActionPerformed(evt);
@@ -207,6 +232,9 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
         jLabel4.setText("CLIENTE");
 
         jLabel5.setText("GRUPO");
+
+        jCBLote.addItem("Todos");
+        jCBLote.addItem("Sin Lote");
 
         jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, loteList, jCBLote);
         bindingGroup.addBinding(jComboBoxBinding);
@@ -227,22 +255,39 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
 
         jCBEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "En stock", "Todos", "Despachado", "Descargado", "Clasificado", "Loteado" }));
 
-        dateChooser.setWeekStyle(datechooser.view.WeekDaysStyle.SHORT);
+        FechaDesde.setWeekStyle(datechooser.view.WeekDaysStyle.SHORT);
         try {
-            dateChooser.setDefaultPeriods(new datechooser.model.multiple.PeriodSet());
+            FechaDesde.setDefaultPeriods(new datechooser.model.multiple.PeriodSet());
         } catch (datechooser.model.exeptions.IncompatibleDataExeption e1) {
             e1.printStackTrace();
         }
-        dateChooser.setFieldFont(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 12));
+        FechaDesde.setFieldFont(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 12));
 
         jLabel12.setText("FECHA DESCARGA");
+
+        FechaHasta.setWeekStyle(datechooser.view.WeekDaysStyle.SHORT);
+        try {
+            FechaHasta.setDefaultPeriods(new datechooser.model.multiple.PeriodSet());
+        } catch (datechooser.model.exeptions.IncompatibleDataExeption e1) {
+            e1.printStackTrace();
+        }
+        FechaHasta.setFieldFont(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 12));
+
+        jLabel13.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel13.setText("DESDE");
+
+        jLabel14.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel14.setText("HASTA");
+
+        jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, proveedorList1, jCBAcopiador);
+        bindingGroup.addBinding(jComboBoxBinding);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(94, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jLabel7)
@@ -252,16 +297,19 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
                 .addGap(26, 26, 26)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jCBProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jCBProveedor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jCBCliente, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING)))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                            .addComponent(jLabel4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jCBAcopiador, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(36, 36, 36)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel9)
                     .addComponent(jLabel5)
                     .addComponent(jTFContrato)
-                    .addComponent(jCBSector, 0, 136, Short.MAX_VALUE))
+                    .addComponent(jCBSector, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel3)
@@ -273,64 +321,87 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
                     .addComponent(jLabel10)
                     .addComponent(jLabel11)
                     .addComponent(jCBTrazado, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jCBEstado, 0, 148, Short.MAX_VALUE))
+                    .addComponent(jCBEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(dateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(FechaDesde, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(FechaHasta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(jLabel12))
-                .addContainerGap(94, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                .addComponent(jBBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(21, 21, 21))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(dateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jBBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCBColor, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(jLabel8)
                             .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jCBProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTFNumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jCBSector, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCBProveedor, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTFNumero, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel7)
                                 .addComponent(jLabel4))
-                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jCBAcopiador, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jTFSenasa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTFContrato, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jCBCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jCBColor, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jCBSector, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jBBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel10)
-                            .addComponent(jLabel12))
+                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jCBTrazado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
                             .addComponent(jLabel11))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jCBEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jCBLote, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jCBLote, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(22, 22, 22)
+                                .addComponent(FechaDesde, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jLabel13)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(FechaHasta, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel14)
+                                .addGap(7, 7, 7)))))
                 .addContainerGap())
         );
 
@@ -350,7 +421,7 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jTableTambores.setColumnSelectionAllowed(true);
+        jTableTambores.setCellSelectionEnabled(true);
         jTableTambores.getTableHeader().setReorderingAllowed(false);
 
         org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tamborList, jTableTambores);
@@ -407,18 +478,18 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
         columnBinding.setColumnClass(String.class);
         columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${humedad}"));
-        columnBinding.setColumnName("Humedad");
+        columnBinding.setColumnName("Hum.");
         columnBinding.setColumnClass(Float.class);
         columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${dextrina}"));
-        columnBinding.setColumnName("Dextrina");
+        columnBinding.setColumnName("Dext.");
         columnBinding.setColumnClass(Float.class);
         columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${estadoTambor}"));
         columnBinding.setColumnName("Tambor");
         columnBinding.setColumnClass(String.class);
         columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${idDescarga.idProveedor.razonSocial}"));
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${acopiador.razonSocial}"));
         columnBinding.setColumnName("Acopiador");
         columnBinding.setColumnClass(String.class);
         columnBinding.setEditable(false);
@@ -430,18 +501,9 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
         columnBinding.setColumnName("Ap. Venta");
         columnBinding.setColumnClass(String.class);
         columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${idLote.idLoteContrato.idContrato.numero}"));
-        columnBinding.setColumnName("Contrato");
-        columnBinding.setColumnClass(String.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${idLote.idLoteContrato.idContrato.idCliente.razonSocial}"));
-        columnBinding.setColumnName("Cliente");
-        columnBinding.setColumnClass(String.class);
-        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${observaciones}"));
         columnBinding.setColumnName("Observaciones");
         columnBinding.setColumnClass(String.class);
-        columnBinding.setEditable(false);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
         jTableTambores.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -466,9 +528,9 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
         jScrollPane1.setViewportView(jTableTambores);
         jTableTambores.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         if (jTableTambores.getColumnModel().getColumnCount() > 0) {
-            jTableTambores.getColumnModel().getColumn(4).setMinWidth(50);
-            jTableTambores.getColumnModel().getColumn(4).setPreferredWidth(50);
-            jTableTambores.getColumnModel().getColumn(4).setMaxWidth(50);
+            jTableTambores.getColumnModel().getColumn(4).setMinWidth(47);
+            jTableTambores.getColumnModel().getColumn(4).setPreferredWidth(47);
+            jTableTambores.getColumnModel().getColumn(4).setMaxWidth(47);
             jTableTambores.getColumnModel().getColumn(5).setMinWidth(40);
             jTableTambores.getColumnModel().getColumn(5).setPreferredWidth(40);
             jTableTambores.getColumnModel().getColumn(5).setMaxWidth(40);
@@ -478,21 +540,18 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
             jTableTambores.getColumnModel().getColumn(7).setMinWidth(40);
             jTableTambores.getColumnModel().getColumn(7).setPreferredWidth(40);
             jTableTambores.getColumnModel().getColumn(7).setMaxWidth(40);
-            jTableTambores.getColumnModel().getColumn(9).setMinWidth(40);
-            jTableTambores.getColumnModel().getColumn(9).setPreferredWidth(40);
-            jTableTambores.getColumnModel().getColumn(9).setMaxWidth(40);
             jTableTambores.getColumnModel().getColumn(11).setMinWidth(40);
             jTableTambores.getColumnModel().getColumn(11).setPreferredWidth(40);
             jTableTambores.getColumnModel().getColumn(11).setMaxWidth(40);
             jTableTambores.getColumnModel().getColumn(12).setMinWidth(40);
             jTableTambores.getColumnModel().getColumn(12).setPreferredWidth(40);
             jTableTambores.getColumnModel().getColumn(12).setMaxWidth(40);
-            jTableTambores.getColumnModel().getColumn(13).setMinWidth(60);
-            jTableTambores.getColumnModel().getColumn(13).setPreferredWidth(60);
-            jTableTambores.getColumnModel().getColumn(13).setMaxWidth(60);
-            jTableTambores.getColumnModel().getColumn(14).setMinWidth(60);
-            jTableTambores.getColumnModel().getColumn(14).setPreferredWidth(60);
-            jTableTambores.getColumnModel().getColumn(14).setMaxWidth(60);
+            jTableTambores.getColumnModel().getColumn(13).setMinWidth(40);
+            jTableTambores.getColumnModel().getColumn(13).setPreferredWidth(40);
+            jTableTambores.getColumnModel().getColumn(13).setMaxWidth(40);
+            jTableTambores.getColumnModel().getColumn(14).setMinWidth(40);
+            jTableTambores.getColumnModel().getColumn(14).setPreferredWidth(40);
+            jTableTambores.getColumnModel().getColumn(14).setMaxWidth(40);
         }
 
         jBTrazar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/trazar icono.png"))); // NOI18N
@@ -565,60 +624,91 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
             }
         });
 
+        jBAsignarLote.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/pool.png"))); // NOI18N
+        jBAsignarLote.setText("ASIGNAR LOTE");
+        jBAsignarLote.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBAsignarLoteActionPerformed(evt);
+            }
+        });
+
+        jBCambiarAcopiador.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/cambiar icono.png"))); // NOI18N
+        jBCambiarAcopiador.setText("ACOPIADOR");
+        jBCambiarAcopiador.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBCambiarAcopiadorActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jBTrazar, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jBTrazar, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBCambiarProductor1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jBCambiarAcopiador, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jBCambiarProductor, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jBCambiarSector1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jBCambiarSector, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36)
-                .addComponent(Cantidad)
+                .addComponent(jBCambiarProductor1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jBCambiarProductor, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jBCambiarSector1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jBCambiarSector, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jBAsignarLote, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(Cantidad2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextColor, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(Cantidad3, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(Cantidad)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32)
+                        .addComponent(Cantidad1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(16, 16, 16)
-                .addComponent(Cantidad1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextPeso, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Cantidad2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextColor, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(Cantidad3, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextHumedad, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1366, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextPeso, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextHumedad, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+            .addComponent(jScrollPane1)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jBTrazar, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBCambiarSector, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBCambiarSector1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Cantidad)
-                    .addComponent(jTextPeso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Cantidad1)
-                    .addComponent(Cantidad2)
-                    .addComponent(jTextColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Cantidad3)
-                    .addComponent(jTextHumedad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBCambiarProductor1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBCambiarProductor, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(17, 17, 17))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jBTrazar, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jBCambiarSector, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jBCambiarSector1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jBCambiarProductor1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jBCambiarProductor, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jBAsignarLote, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jBCambiarAcopiador, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(17, 17, 17))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(Cantidad2)
+                            .addComponent(jTextColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Cantidad3)
+                            .addComponent(jTextHumedad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Cantidad)
+                            .addComponent(jTextPeso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Cantidad1))
+                        .addContainerGap())))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -631,7 +721,7 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 1223, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jBVolver)
                 .addGap(30, 30, 30))
         );
@@ -644,7 +734,7 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jBVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, -1, -1));
@@ -672,7 +762,7 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
         } else {
             JOptionPane.showMessageDialog(null, "Debe seleccionar un Tambor", "Validación", JOptionPane.WARNING_MESSAGE);
         }
-
+//        tamborQuery = java.beans.Beans.isDesignTime() ? null : qlf;
         tamborList.clear();
         tamborList.addAll(tamborQuery.getResultList());
     }//GEN-LAST:event_jBCambiarSector1ActionPerformed
@@ -714,12 +804,12 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
                 } else {
                     JOptionPane.showMessageDialog(null, "Todos los tambores fueron modificados con éxito", "Validación", JOptionPane.INFORMATION_MESSAGE);
                 }
-            
+
             }
         } else {
             JOptionPane.showMessageDialog(null, "Debe seleccionar un Tambor", "Validación", JOptionPane.WARNING_MESSAGE);
         }
-
+//        tamborQuery = java.beans.Beans.isDesignTime() ? null : qlf;
         tamborList.clear();
         tamborList.addAll(tamborQuery.getResultList());
     }//GEN-LAST:event_jBCambiarSectorActionPerformed
@@ -750,13 +840,15 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
                         Logger.getLogger(jDialogTamboresGeneral.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-            } 
+            }
+//            tamborQuery = java.beans.Beans.isDesignTime() ? null : qlf;
             tamborList.clear();
             tamborList.addAll(tamborQuery.getResultList());
 
         } else {
             JOptionPane.showMessageDialog(null, "Debe seleccionar un Tambor", "Validación", JOptionPane.WARNING_MESSAGE);
         }
+//        tamborQuery = java.beans.Beans.isDesignTime() ? null : qlf;
         tamborList.clear();
         tamborList.addAll(tamborQuery.getResultList());
     }//GEN-LAST:event_jBCambiarProductorActionPerformed
@@ -787,7 +879,7 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
             } else {
                 JOptionPane.showMessageDialog(null, "Todos los tambores fueron modificados con éxito", "Validación", JOptionPane.INFORMATION_MESSAGE);
             }
-
+//            tamborQuery = java.beans.Beans.isDesignTime() ? null : qlf;
             tamborList.clear();
             tamborList.addAll(tamborQuery.getResultList());
 
@@ -803,29 +895,62 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
 
     private void jBBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBBuscarActionPerformed
 
+        String queryTxt = null;
+        this.FechaDesde.setText("");
+        this.FechaHasta.setText("");
         Proveedor provSel = proveedorList.get(jCBProveedor.getSelectedIndex());
         Cliente cliSel = clienteList.get(jCBCliente.getSelectedIndex());
         Sector secSel = sectorList.get(jCBSector.getSelectedIndex());
         Lote loteSel = loteList.get(jCBLote.getSelectedIndex());
         Color colSel = colorList.get(this.jCBColor.getSelectedIndex());
-        Date fecha = null;
+        Date fechaDesde = null;
+        Date fechaHasta = null;
+        Boolean validaFecha = false;
 
         Query ql;
-        String queryTxt = "SELECT t FROM Tambor t WHERE 1=1 ";
+        queryTxt = "SELECT t FROM Tambor t WHERE 1=1 AND t.estado = 'devuelto'";
 
-        if (!this.dateChooser.getText().isEmpty()) {
-            try {
-                String fechaS = this.dateChooser.getText();
-                fecha = (Date) new SimpleDateFormat("dd/MM/yy").parse(fechaS);
+        if (!this.FechaDesde.getText().isEmpty()) {
+            if (!this.FechaHasta.getText().isEmpty()) {
+                try {
+                    String fechaD = this.FechaDesde.getText();
+                    fechaDesde = (Date) new SimpleDateFormat("dd/MM/yy").parse(fechaD);
+                    String fechaH = this.FechaHasta.getText();
+                    fechaHasta = (Date) new SimpleDateFormat("dd/MM/yy").parse(fechaH);
 
-            } catch (ParseException ex) {
-                Logger.getLogger(jDialogDescargas.class.getName()).log(Level.SEVERE, null, ex);
-                fecha = null;
+                } catch (ParseException ex) {
+                    Logger.getLogger(jDialogDescargas.class.getName()).log(Level.SEVERE, null, ex);
+                    fechaDesde = null;
+                    fechaHasta = null;
+                }
+
+                if (fechaDesde != null) {
+                    queryTxt = queryTxt + " AND  t.idDescarga.fecha BETWEEN :pFechaD AND :pFechaH";
+                } else {
+                    validaFecha = true;
+
+                }
             }
-
-            if (fecha != null) {
-                queryTxt = queryTxt + " AND  t.idDescarga.fecha = :pFecha ";
-            }
+//            if (!this.FechaHasta.getText().isEmpty()) {
+//                try {
+//
+//                    String fechaH = this.FechaHasta.getText();
+//                    fechaHasta = (Date) new SimpleDateFormat("dd/MM/yy").parse(fechaH);
+//
+//                } catch (ParseException ex) {
+//                    Logger.getLogger(jDialogDescargas.class.getName()).log(Level.SEVERE, null, ex);
+//                    fechaHasta = null;
+//                }
+//
+//                if (fechaHasta != null) {
+//                    queryTxt = queryTxt + " AND  t.idDescarga.fecha BETWEEN :pFechaD AND :pFechaH";
+//                } else {
+//                    validaFecha = true;
+//                }
+        }
+        if (validaFecha) {
+            JOptionPane.showMessageDialog(null, "Seleccione ambas fechas", "Validación", JOptionPane.WARNING_MESSAGE);
+            FechaDesde.requestFocus();
         }
 
         if (!this.jTFNumero.getText().isEmpty()) {
@@ -862,11 +987,17 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
         if (!colSel.getColor().equals("Todos")) {
             queryTxt = queryTxt + " AND t.idColor=:pColor ";
         }
-        if (!secSel.getNombre().equals("Todos")) {
+        if (!secSel.getNombre().equals("Todos") && !secSel.getNombre().equals(" Sin Asignar")) {
             queryTxt = queryTxt + " AND t.idSector=:pSector ";
         }
-        if (!loteSel.getLote().equals("Todos")) {
+        if (secSel.getNombre().equals(" Sin Asignar")) {
+            queryTxt = queryTxt + " AND t.idSector is null ";
+        }
+        if (!loteSel.getLote().equals("Todos") && !loteSel.getLote().equals("Sin Lote")) {
             queryTxt = queryTxt + " AND t.idLote=:pLote ";
+        }
+        if (loteSel.getLote().equals("Sin Lote")) {
+            queryTxt = queryTxt + " AND t.idLote is null ";
         }
 
         if (!cliSel.getRazonSocial().equals("Todos")) {
@@ -879,19 +1010,23 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
 
         ql = em.createQuery(queryTxt);
 
-        if (fecha != null) {
-            ql.setParameter("pFecha", fecha);
+        if (fechaDesde != null) {
+            ql.setParameter("pFechaD", fechaDesde);
+            ql.setParameter("pFechaH", fechaHasta);
         }
 
         if (!colSel.getColor().equals("Todos")) {
             ql.setParameter("pColor", colSel);
         }
-        if (!secSel.getNombre().equals("Todos")) {
+        if (!secSel.getNombre().equals("Todos") && !secSel.getNombre().equals(" Sin Asignar")) {
             ql.setParameter("pSector", secSel);
         }
-        if (!loteSel.getLote().equals("Todos")) {
+        if (!loteSel.getLote().equals("Todos") && !loteSel.getLote().equals("Sin Lote")) {
             ql.setParameter("pLote", loteSel);
         }
+//         if (loteSel.getLote().equals("Sin Lote")) {
+//            ql.setParameter("pLote", null);
+//        }
         if (!cliSel.getRazonSocial().equals("Todos")) {
             ql.setParameter("pCliente", cliSel);
         }
@@ -903,10 +1038,19 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
         if ((!est.equals("en stock")) && (!est.equals("todos"))) {
             ql.setParameter("pEstado", est);
         }
+        if ((!est.equals("en stock")) && (!est.equals("todos")) || !provSel.getRazonSocial().equals("Todos")
+                || !cliSel.getRazonSocial().equals("Todos") || !loteSel.getLote().equals("Todos") && !loteSel.getLote().equals("Sin Lote")
+                || !secSel.getNombre().equals("Todos") || !colSel.getColor().equals("Todos") || fechaDesde != null
+                || !this.jTFNumero.getText().isEmpty() || !this.jTFSenasa.getText().isEmpty()
+                || !this.jTFContrato.getText().isEmpty() || !Traz.equals("Todos")) {
+            tamborQuery = java.beans.Beans.isDesignTime() ? null : ql;
 
-        tamborQuery = java.beans.Beans.isDesignTime() ? null : ql;
+        } else {
+            tamborQuery = java.beans.Beans.isDesignTime() ? null : qlf;
+        }
         tamborList.clear();
         tamborList.addAll(tamborQuery.getResultList());
+
     }//GEN-LAST:event_jBBuscarActionPerformed
 
     private void jCBSectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBSectorActionPerformed
@@ -935,15 +1079,104 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
                     }
                 }
             }
+//            tamborQuery = java.beans.Beans.isDesignTime() ? null : qlf;
             tamborList.clear();
             tamborList.addAll(tamborQuery.getResultList());
 
         } else {
             JOptionPane.showMessageDialog(null, "Debe seleccionar un Tambor", "Validación", JOptionPane.WARNING_MESSAGE);
         }
+//        tamborQuery = java.beans.Beans.isDesignTime() ? null : qlf;
         tamborList.clear();
         tamborList.addAll(tamborQuery.getResultList());
     }//GEN-LAST:event_jBCambiarProductor1ActionPerformed
+
+    private void jBAsignarLoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAsignarLoteActionPerformed
+        if (this.jTableTambores.getSelectedRowCount() != 0) {
+
+            boolean validacion = false;
+            JComboBox jComboBoxCambiaLote = new JComboBox((Vector) loteList);
+            int input = JOptionPane.showConfirmDialog(this, jComboBoxCambiaLote, "Seleccione Lote", JOptionPane.DEFAULT_OPTION);
+
+            if (input == JOptionPane.OK_OPTION) {
+
+                Lote loteSel = (Lote) jComboBoxCambiaLote.getSelectedItem();
+
+                for (int i = 0; i < jTableTambores.getRowCount(); i++) {
+
+                    if (jTableTambores.isRowSelected(i)) {
+
+                        tamborSel = (Tambor) tamborList.get(i);
+                        if (tamborSel.getEstado().equals("despachado") || tamborSel.getIdSector() == null) {
+                            validacion = true;
+                        } else {
+                            tamborSel.setIdLote(loteSel);
+                            try {
+                                controladorT.edit(tamborSel);
+                            } catch (Exception ex) {
+                                validacion = true;
+                                Logger.getLogger(jDialogTamboresGeneral.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+
+                        }
+
+                    }
+
+                }
+                if (validacion) {
+                    JOptionPane.showMessageDialog(null, "Hay tambores que no se pudieron cambiar ya que se encontarban despachados o no tiene Grupo", "Validación", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Todos los tambores fueron modificados con éxito", "Validación", JOptionPane.INFORMATION_MESSAGE);
+                }
+
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar un Tambor", "Validación", JOptionPane.WARNING_MESSAGE);
+        }
+//        tamborQuery = java.beans.Beans.isDesignTime() ? null : qlf;
+        tamborList.clear();
+        tamborList.addAll(tamborQuery.getResultList());
+    }//GEN-LAST:event_jBAsignarLoteActionPerformed
+
+    private void jBCambiarAcopiadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBCambiarAcopiadorActionPerformed
+
+        if (this.jTableTambores.getSelectedRowCount() != 0) {
+            tambor.clear();
+            for (int i = 0; i < jTableTambores.getRowCount(); i++) {
+                if (jTableTambores.isRowSelected(i)) {
+                    tambor.add(tamborList.get(i));
+                }
+            }
+            jCBAcopiador.setVisible(true);
+            int reply = JOptionPane.showConfirmDialog(null, jCBAcopiador, "Selecione Acopiador", JOptionPane.YES_NO_OPTION);
+            if (reply == JOptionPane.YES_OPTION) {
+                provSel = (Proveedor) jCBAcopiador.getSelectedItem();
+
+                for (int i = 0; i < tambor.size(); i++) {
+                    tamborSel = (Tambor) tambor.get(i);
+                    tamborSel.setAcopiador(provSel);
+                    try {
+                        controladorT.edit(tamborSel);
+                    } catch (Exception ex) {
+                        Logger.getLogger(jDialogTamboresGeneral.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+
+//            tamborQuery = java.beans.Beans.isDesignTime() ? null : qlf;
+                tamborList.clear();
+                tamborList.addAll(tamborQuery.getResultList());
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Debe seleccionar un Tambor", "Validación", JOptionPane.WARNING_MESSAGE);
+            }
+//        tamborQuery = java.beans.Beans.isDesignTime() ? null : qlf;
+            jCBAcopiador.setVisible(false);
+            tamborList.clear();
+            tamborList.addAll(tamborQuery.getResultList());
+
+    }//GEN-LAST:event_jBCambiarAcopiadorActionPerformed
+    
 
     public void calculaSeleccion() {
         Tambor t = new Tambor();
@@ -1035,6 +1268,9 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -1056,19 +1292,23 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
     private javax.swing.JLabel Cantidad1;
     private javax.swing.JLabel Cantidad2;
     private javax.swing.JLabel Cantidad3;
+    private datechooser.beans.DateChooserCombo FechaDesde;
+    private datechooser.beans.DateChooserCombo FechaHasta;
     private javax.persistence.EntityManager SegTAPUEntityManager;
     private java.util.List<segta.clases.Cliente> clienteList;
     private javax.persistence.Query clienteQuery;
     private java.util.List<segta.clases.Color> colorList;
     private javax.persistence.Query colorQuery;
-    private datechooser.beans.DateChooserCombo dateChooser;
+    private javax.swing.JButton jBAsignarLote;
     private javax.swing.JButton jBBuscar;
+    private javax.swing.JButton jBCambiarAcopiador;
     private javax.swing.JButton jBCambiarProductor;
     private javax.swing.JButton jBCambiarProductor1;
     private javax.swing.JButton jBCambiarSector;
     private javax.swing.JButton jBCambiarSector1;
     private javax.swing.JButton jBTrazar;
     private javax.swing.JButton jBVolver;
+    private javax.swing.JComboBox<String> jCBAcopiador;
     private javax.swing.JComboBox<String> jCBCliente;
     private javax.swing.JComboBox<String> jCBColor;
     private javax.swing.JComboBox<String> jCBEstado;
@@ -1080,6 +1320,8 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
