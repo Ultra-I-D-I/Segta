@@ -605,7 +605,7 @@ private void actualizarPerfiles(Usuario user){
     private int nuevoPerfil() throws NoSuchAlgorithmException{
          // TODO add your handling code here:
         int resultado=0;
-        String[] perfiles = { "Administrador", "Descargas", "Laboratorio", "Contratos","Listados","Tambores","Lotes","Configuración","Apicultores","Clientes" };
+        String[] perfiles = { "Administrador", "Descargas","Devoluciones", "Laboratorio", "Contratos","Listados","Tambores","Lotes","Configuración","Apicultores","Clientes" };
         String nuevoPerfil = null;
         nuevoPerfil=  (String) JOptionPane.showInputDialog(null,"Seleccione perfil para el usuario "+usuarioSel.getNombre(),"Perfiles",JOptionPane.QUESTION_MESSAGE,null,perfiles,perfiles[0]);
                

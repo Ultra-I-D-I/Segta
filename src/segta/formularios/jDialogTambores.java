@@ -150,7 +150,7 @@ public class jDialogTambores extends javax.swing.JDialog {
         tamborQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT t FROM Tambor t WHERE t.idDescarga = :descargaSel").setParameter("descargaSel",de);
         tamborList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : org.jdesktop.observablecollections.ObservableCollections.observableList(tamborQuery.getResultList());
         EstadoTambor = new javax.swing.ButtonGroup();
-        proveedorQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT p FROM Proveedor p WHERE p.baja = 0 ORDER BY p.razonSocial");
+        proveedorQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT p FROM Proveedor p WHERE p.baja = 0 AND p.razonSocial != '' ORDER BY p.razonSocial");
         proveedorList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : org.jdesktop.observablecollections.ObservableCollections.observableList(proveedorQuery.getResultList());
         acopiadorQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT p FROM Proveedor p WHERE p.acopiador = 1 AND p.baja = 0 ORDER BY p.razonSocial");
         acopiadorList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : org.jdesktop.observablecollections.ObservableCollections.observableList(acopiadorQuery.getResultList());
@@ -406,7 +406,7 @@ public class jDialogTambores extends javax.swing.JDialog {
         });
 
         jCBProveedor.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jCBProveedor.setMaximumRowCount(100);
+        jCBProveedor.setMaximumRowCount(10);
         jCBProveedor.setNextFocusableComponent(jTFNumero);
 
         org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, proveedorList, jCBProveedor);
@@ -899,7 +899,7 @@ public class jDialogTambores extends javax.swing.JDialog {
             nuevoTambor.setIdDescarga(de);
             Proveedor AcoSel = (Proveedor) this.jComboBoxApicultor.getSelectedItem();
             if (AcoSel.getRazonSocial() == "") {
-                AcoSel.setBaja(0);}
+                 AcoSel.setIdProveedor(3000);}           
             
             nuevoTambor.setAcopiador(AcoSel);            
             if (provSel.getRazonSocial() == "") {
@@ -1150,7 +1150,7 @@ this.jComboBoxApicultor.requestFocus();
 
     private void jCBProveedorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jCBProveedorKeyPressed
              if(evt.getKeyCode() == KeyEvent.VK_ENTER){
-            this.jTFIdentificador.requestFocus();}
+            this.jTFSenasa.requestFocus();}
     }//GEN-LAST:event_jCBProveedorKeyPressed
 
     private void jTFIdentificadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTFIdentificadorKeyPressed
@@ -1160,12 +1160,12 @@ this.jComboBoxApicultor.requestFocus();
 
     private void jTFRemitoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTFRemitoKeyPressed
              if(evt.getKeyCode() == KeyEvent.VK_ENTER){
-            this.jTFSenasa.requestFocus();}
+            this.jTFTara.requestFocus();}
     }//GEN-LAST:event_jTFRemitoKeyPressed
 
     private void jTFSenasaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTFSenasaKeyPressed
              if(evt.getKeyCode() == KeyEvent.VK_ENTER){
-            this.jTFTara.requestFocus();}
+            this.jTFIdentificador.requestFocus();}
     }//GEN-LAST:event_jTFSenasaKeyPressed
 
     private void jTFTaraKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTFTaraKeyPressed
@@ -1199,7 +1199,7 @@ this.jComboBoxApicultor.requestFocus();
             nuevoTambor.setIdDescarga(de);
             Proveedor AcoSel = (Proveedor) this.jComboBoxApicultor.getSelectedItem();
             if (AcoSel.getRazonSocial() == "") {
-                AcoSel.setBaja(0);}
+                AcoSel.setIdProveedor(3000);}
             
             nuevoTambor.setAcopiador(AcoSel);            
             if (provSel.getRazonSocial() == "") {

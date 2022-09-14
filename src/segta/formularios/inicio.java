@@ -9,6 +9,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import segta.clases.Descargas;
+import segta.clases.Homo;
 import segta.clases.Usuario;
 import segta.clases.Usuarioperfil;
 
@@ -22,6 +23,7 @@ public class inicio extends javax.swing.JFrame {
      * Creates new form inicio
      */
     public static Descargas de;
+    public static Homo ho;
     public static int idDescargas;
     public Usuario user;
     public static boolean cambioSector=false;
@@ -36,7 +38,7 @@ public class inicio extends javax.swing.JFrame {
         centerComponent(this.jLabel1);
         centerComponent(this.jLabel2);
         setearPermisos();
-//        this.setExtendedState(MAXIMIZED_BOTH);
+        this.setExtendedState(MAXIMIZED_BOTH);
         
 //        rsscalelabel.RSScaleLabel.setScaleLabel(jLabel1, "/segta/imagenes/fondo inicio.png");
     }
@@ -45,14 +47,14 @@ public class inicio extends javax.swing.JFrame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = c.getSize();
 
-//        if (frameSize.height > screenSize.height) {
-//            frameSize.height = screenSize.height;
-//        }
-//
-//        if (frameSize.width > screenSize.width) {
-//            frameSize.width = screenSize.width;
-//        }
-//            c.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
+        if (frameSize.height > screenSize.height) {
+            frameSize.height = screenSize.height;
+        }
+
+        if (frameSize.width > screenSize.width) {
+            frameSize.width = screenSize.width;
+        }
+            c.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
        
  }
     
@@ -70,17 +72,20 @@ public class inicio extends javax.swing.JFrame {
             this.jBTambores.setEnabled(true);
             this.jBclientes.setEnabled(true);
             this.jBDevoluciones.setEnabled(true);
+            this.jBHomo.setEnabled(true);
             
             //Habilita Botones del menú
             this.jMenuItemApicultores.setEnabled(true);
             this.jMenuItemClientes.setEnabled(true);
             this.jMenuItemContratos.setEnabled(true);
             this.jMenuItemDescargas.setEnabled(true);
+            this.jMenuItemDevoluciones.setEnabled(true);
             this.jMenuItemLab.setEnabled(true);
             this.jMenuItemList.setEnabled(true);
             this.jMenuItemLotes.setEnabled(true);
             this.jMenuItemTambores.setEnabled(true);
             this.jMenuConfig.setEnabled(true);
+            this.jMenuItemHomo.setEnabled(true);
             this.jMenuItemUsuarios.setEnabled(true);
                         
         }else{
@@ -134,6 +139,18 @@ public class inicio extends javax.swing.JFrame {
                 this.jMenuItemClientes.setEnabled(true);
               
             }
+            if (user.tienePerfil("Devoluciones")){
+                 //Habilita botones del Panel
+                this.jBDevoluciones.setEnabled(true);
+                this.jMenuItemDevoluciones.setEnabled(true);
+              
+            }
+            if (user.tienePerfil("Homogeneizado")){
+                 //Habilita botones del Panel
+                this.jBHomo.setEnabled(true);
+                this.jMenuItemHomo.setEnabled(true);
+              
+            }
             
             
         }
@@ -153,14 +170,15 @@ public class inicio extends javax.swing.JFrame {
 
         jLabel2 = new javax.swing.JLabel();
         jBLotes = new javax.swing.JButton();
-        jBContratos = new javax.swing.JButton();
-        jBclientes = new javax.swing.JButton();
-        jBListados = new javax.swing.JButton();
-        jBProveedores = new javax.swing.JButton();
         jBTambores = new javax.swing.JButton();
-        jBLaboratorio = new javax.swing.JButton();
         jBDescargas = new javax.swing.JButton();
+        jBContratos = new javax.swing.JButton();
+        jBListados = new javax.swing.JButton();
+        jBclientes = new javax.swing.JButton();
+        jBProveedores = new javax.swing.JButton();
         jBDevoluciones = new javax.swing.JButton();
+        jBLaboratorio = new javax.swing.JButton();
+        jBHomo = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuArchivo = new javax.swing.JMenu();
@@ -169,10 +187,12 @@ public class inicio extends javax.swing.JFrame {
         jMenuItemClientes = new javax.swing.JMenuItem();
         jMenuItemContratos = new javax.swing.JMenuItem();
         jMenuItemDescargas = new javax.swing.JMenuItem();
+        jMenuItemDevoluciones = new javax.swing.JMenuItem();
         jMenuItemLab = new javax.swing.JMenuItem();
         jMenuItemList = new javax.swing.JMenuItem();
         jMenuItemLotes = new javax.swing.JMenuItem();
         jMenuItemTambores = new javax.swing.JMenuItem();
+        jMenuItemHomo = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenuConfig = new javax.swing.JMenu();
         jMenuItemColor = new javax.swing.JMenuItem();
@@ -198,24 +218,59 @@ public class inicio extends javax.swing.JFrame {
         jBLotes.setBorderPainted(false);
         jBLotes.setContentAreaFilled(false);
         jBLotes.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jBLotes.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/botonEscondido.png"))); // NOI18N
+        jBLotes.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda lotes.png"))); // NOI18N
         jBLotes.setEnabled(false);
         jBLotes.setFocusable(false);
-        jBLotes.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda lotes 2.png"))); // NOI18N
+        jBLotes.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda lotes 3.png"))); // NOI18N
         jBLotes.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda lotes 3.png"))); // NOI18N
         jBLotes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBLotesActionPerformed(evt);
             }
         });
-        getContentPane().add(jBLotes, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 170, 220, 220));
+        getContentPane().add(jBLotes, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 340, 220, 220));
+
+        jBTambores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda tambor.png"))); // NOI18N
+        jBTambores.setBorder(null);
+        jBTambores.setBorderPainted(false);
+        jBTambores.setContentAreaFilled(false);
+        jBTambores.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jBTambores.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda tambor.png"))); // NOI18N
+        jBTambores.setDoubleBuffered(true);
+        jBTambores.setEnabled(false);
+        jBTambores.setFocusable(false);
+        jBTambores.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda tambor 3.png"))); // NOI18N
+        jBTambores.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda tambor 3.png"))); // NOI18N
+        jBTambores.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBTamboresActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jBTambores, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 320, 230, 210));
+
+        jBDescargas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda descargas.png"))); // NOI18N
+        jBDescargas.setBorder(null);
+        jBDescargas.setBorderPainted(false);
+        jBDescargas.setContentAreaFilled(false);
+        jBDescargas.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jBDescargas.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda descargas.png"))); // NOI18N
+        jBDescargas.setEnabled(false);
+        jBDescargas.setFocusPainted(false);
+        jBDescargas.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda descargas 3.png"))); // NOI18N
+        jBDescargas.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda descargas 3.png"))); // NOI18N
+        jBDescargas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBDescargasActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jBDescargas, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 410, 200, 200));
 
         jBContratos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda contratos.png"))); // NOI18N
         jBContratos.setBorder(null);
         jBContratos.setBorderPainted(false);
         jBContratos.setContentAreaFilled(false);
         jBContratos.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jBContratos.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/botonEscondido.png"))); // NOI18N
+        jBContratos.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda contratos.png"))); // NOI18N
         jBContratos.setEnabled(false);
         jBContratos.setFocusPainted(false);
         jBContratos.setFocusable(false);
@@ -226,48 +281,48 @@ public class inicio extends javax.swing.JFrame {
                 jBContratosActionPerformed(evt);
             }
         });
-        getContentPane().add(jBContratos, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 150, 210, 210));
-
-        jBclientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda clientes.png"))); // NOI18N
-        jBclientes.setBorderPainted(false);
-        jBclientes.setContentAreaFilled(false);
-        jBclientes.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jBclientes.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/botonEscondido.png"))); // NOI18N
-        jBclientes.setEnabled(false);
-        jBclientes.setFocusable(false);
-        jBclientes.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda clientes 2.png"))); // NOI18N
-        jBclientes.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda clientes 3.png"))); // NOI18N
-        jBclientes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBclientesActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jBclientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 170, 210, 200));
+        getContentPane().add(jBContratos, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 500, 210, 210));
 
         jBListados.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda listado.png"))); // NOI18N
         jBListados.setBorder(null);
         jBListados.setBorderPainted(false);
         jBListados.setContentAreaFilled(false);
         jBListados.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jBListados.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/botonEscondido.png"))); // NOI18N
+        jBListados.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda listado.png"))); // NOI18N
         jBListados.setDoubleBuffered(true);
         jBListados.setEnabled(false);
         jBListados.setFocusPainted(false);
-        jBListados.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda listado 2.png"))); // NOI18N
+        jBListados.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda listado 3.png"))); // NOI18N
         jBListados.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda listado 3.png"))); // NOI18N
         jBListados.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBListadosActionPerformed(evt);
             }
         });
-        getContentPane().add(jBListados, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 430, 210, 200));
+        getContentPane().add(jBListados, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 0, 210, 200));
+
+        jBclientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda clientes.png"))); // NOI18N
+        jBclientes.setBorderPainted(false);
+        jBclientes.setContentAreaFilled(false);
+        jBclientes.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jBclientes.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda clientes.png"))); // NOI18N
+        jBclientes.setEnabled(false);
+        jBclientes.setFocusable(false);
+        jBclientes.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda clientes 3.png"))); // NOI18N
+        jBclientes.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda clientes 3.png"))); // NOI18N
+        jBclientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBclientesActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jBclientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 90, 210, 200));
 
         jBProveedores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda apicultor 2.png"))); // NOI18N
         jBProveedores.setBorder(null);
         jBProveedores.setBorderPainted(false);
         jBProveedores.setContentAreaFilled(false);
         jBProveedores.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jBProveedores.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/botonEscondido.png"))); // NOI18N
+        jBProveedores.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda apicultor 2.png"))); // NOI18N
         jBProveedores.setEnabled(false);
         jBProveedores.setFocusCycleRoot(true);
         jBProveedores.setFocusable(false);
@@ -280,32 +335,32 @@ public class inicio extends javax.swing.JFrame {
         });
         getContentPane().add(jBProveedores, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 420, 210, 200));
 
-        jBTambores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda tambor.png"))); // NOI18N
-        jBTambores.setBorderPainted(false);
-        jBTambores.setContentAreaFilled(false);
-        jBTambores.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jBTambores.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/botonEscondido.png"))); // NOI18N
-        jBTambores.setDoubleBuffered(true);
-        jBTambores.setEnabled(false);
-        jBTambores.setFocusable(false);
-        jBTambores.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda tambor 3.png"))); // NOI18N
-        jBTambores.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda tambor 3.png"))); // NOI18N
-        jBTambores.addActionListener(new java.awt.event.ActionListener() {
+        jBDevoluciones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda devoluciones.png"))); // NOI18N
+        jBDevoluciones.setBorder(null);
+        jBDevoluciones.setBorderPainted(false);
+        jBDevoluciones.setContentAreaFilled(false);
+        jBDevoluciones.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jBDevoluciones.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda devoluciones.png"))); // NOI18N
+        jBDevoluciones.setEnabled(false);
+        jBDevoluciones.setFocusPainted(false);
+        jBDevoluciones.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda devoluciones 3.png"))); // NOI18N
+        jBDevoluciones.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda devoluciones 3.png"))); // NOI18N
+        jBDevoluciones.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBTamboresActionPerformed(evt);
+                jBDevolucionesActionPerformed(evt);
             }
         });
-        getContentPane().add(jBTambores, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 390, 230, 210));
+        getContentPane().add(jBDevoluciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 80, 210, 200));
+        jBDevoluciones.getAccessibleContext().setAccessibleDescription("");
 
         jBLaboratorio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda laboratorio 2.png"))); // NOI18N
         jBLaboratorio.setBorder(null);
         jBLaboratorio.setBorderPainted(false);
         jBLaboratorio.setContentAreaFilled(false);
         jBLaboratorio.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jBLaboratorio.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/botonEscondido.png"))); // NOI18N
+        jBLaboratorio.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda laboratorio 2.png"))); // NOI18N
         jBLaboratorio.setDoubleBuffered(true);
         jBLaboratorio.setEnabled(false);
-        jBLaboratorio.setFocusPainted(false);
         jBLaboratorio.setFocusable(false);
         jBLaboratorio.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda laboratorio 3.png"))); // NOI18N
         jBLaboratorio.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda laboratorio 3.png"))); // NOI18N
@@ -314,46 +369,31 @@ public class inicio extends javax.swing.JFrame {
                 jBLaboratorioActionPerformed(evt);
             }
         });
-        getContentPane().add(jBLaboratorio, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 410, 230, 200));
+        getContentPane().add(jBLaboratorio, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 160, 230, 200));
 
-        jBDescargas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda descargas.png"))); // NOI18N
-        jBDescargas.setBorder(null);
-        jBDescargas.setBorderPainted(false);
-        jBDescargas.setContentAreaFilled(false);
-        jBDescargas.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jBDescargas.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/botonEscondido.png"))); // NOI18N
-        jBDescargas.setEnabled(false);
-        jBDescargas.setFocusPainted(false);
-        jBDescargas.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda descargas 2.png"))); // NOI18N
-        jBDescargas.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda descargas 3.png"))); // NOI18N
-        jBDescargas.addActionListener(new java.awt.event.ActionListener() {
+        jBHomo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda Homo.png"))); // NOI18N
+        jBHomo.setBorder(null);
+        jBHomo.setBorderPainted(false);
+        jBHomo.setContentAreaFilled(false);
+        jBHomo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jBHomo.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda Homo.png"))); // NOI18N
+        jBHomo.setDoubleBuffered(true);
+        jBHomo.setEnabled(false);
+        jBHomo.setFocusPainted(false);
+        jBHomo.setFocusable(false);
+        jBHomo.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda Homo 3.png"))); // NOI18N
+        jBHomo.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda Homo 3.png"))); // NOI18N
+        jBHomo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBDescargasActionPerformed(evt);
+                jBHomoActionPerformed(evt);
             }
         });
-        getContentPane().add(jBDescargas, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 160, 200, 200));
-
-        jBDevoluciones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda devoluciones.png"))); // NOI18N
-        jBDevoluciones.setBorder(null);
-        jBDevoluciones.setBorderPainted(false);
-        jBDevoluciones.setContentAreaFilled(false);
-        jBDevoluciones.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jBDevoluciones.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/botonEscondido.png"))); // NOI18N
-        jBDevoluciones.setEnabled(false);
-        jBDevoluciones.setFocusPainted(false);
-        jBDevoluciones.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda devoluciones 2.png"))); // NOI18N
-        jBDevoluciones.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/celda devoluciones 3.png"))); // NOI18N
-        jBDevoluciones.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBDevolucionesActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jBDevoluciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(1110, 190, 200, 200));
+        getContentPane().add(jBHomo, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 180, 230, 200));
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/segta/imagenes/fondo inicio.png"))); // NOI18N
         jLabel1.setOpaque(true);
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1360, -1));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         jMenuBar1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jMenuBar1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -408,6 +448,15 @@ public class inicio extends javax.swing.JFrame {
         });
         jMenuArchivo.add(jMenuItemDescargas);
 
+        jMenuItemDevoluciones.setText("Devoluciones");
+        jMenuItemDevoluciones.setEnabled(false);
+        jMenuItemDevoluciones.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemDevolucionesActionPerformed(evt);
+            }
+        });
+        jMenuArchivo.add(jMenuItemDevoluciones);
+
         jMenuItemLab.setText("Laboratorios");
         jMenuItemLab.setEnabled(false);
         jMenuItemLab.addActionListener(new java.awt.event.ActionListener() {
@@ -443,6 +492,14 @@ public class inicio extends javax.swing.JFrame {
             }
         });
         jMenuArchivo.add(jMenuItemTambores);
+
+        jMenuItemHomo.setText("Homogeneizado");
+        jMenuItemHomo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemHomoActionPerformed(evt);
+            }
+        });
+        jMenuArchivo.add(jMenuItemHomo);
         jMenuArchivo.add(jSeparator2);
 
         jMenuConfig.setText("Configuracion");
@@ -502,6 +559,7 @@ public class inicio extends javax.swing.JFrame {
         setJMenuBar(jMenuBar1);
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jBDescargasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBDescargasActionPerformed
@@ -618,11 +676,27 @@ public class inicio extends javax.swing.JFrame {
        new JDialogDevoluciones(this, false).setVisible(true);
     }//GEN-LAST:event_jBDevolucionesActionPerformed
 
+    private void jMenuItemDevolucionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemDevolucionesActionPerformed
+        // TODO add your handling code here:
+        new JDialogDevoluciones(this, false).setVisible(true);
+    }//GEN-LAST:event_jMenuItemDevolucionesActionPerformed
+
+    private void jBHomoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBHomoActionPerformed
+        // TODO add your handling code here:
+         new jDialogHomo(this, false).setVisible(true);
+    }//GEN-LAST:event_jBHomoActionPerformed
+
+    private void jMenuItemHomoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemHomoActionPerformed
+        // TODO add your handling code here:
+         new jDialogHomo(this, false).setVisible(true);
+    }//GEN-LAST:event_jMenuItemHomoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBContratos;
     private javax.swing.JButton jBDescargas;
     private javax.swing.JButton jBDevoluciones;
+    private javax.swing.JButton jBHomo;
     private javax.swing.JButton jBLaboratorio;
     private javax.swing.JButton jBListados;
     private javax.swing.JButton jBLotes;
@@ -640,6 +714,8 @@ public class inicio extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemContratos;
     private javax.swing.JMenuItem jMenuItemDescargas;
     private javax.swing.JMenuItem jMenuItemDet;
+    private javax.swing.JMenuItem jMenuItemDevoluciones;
+    private javax.swing.JMenuItem jMenuItemHomo;
     private javax.swing.JMenuItem jMenuItemLab;
     private javax.swing.JMenuItem jMenuItemList;
     private javax.swing.JMenuItem jMenuItemLotes;

@@ -97,7 +97,7 @@ public class JDialogeditarTambor extends javax.swing.JDialog {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         SegTAPUEntityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("SegTAPU").createEntityManager();
-        proveedorQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT p FROM Proveedor p WHERE p.baja = 0 ORDER BY p.razonSocial");
+        proveedorQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT p FROM Proveedor p WHERE p.baja = 0 AND p.razonSocial != '' ORDER BY p.razonSocial");
         proveedorList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : proveedorQuery.getResultList();
         proveedorQuery1 = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT p FROM Proveedor p WHERE p.acopiador = 1 AND p.baja = 0 ORDER BY p.razonSocial");
         proveedorList1 = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : proveedorQuery1.getResultList();
@@ -534,6 +534,9 @@ public class JDialogeditarTambor extends javax.swing.JDialog {
             tamborSel.setIdProveedor(provSel);
         }
         if (AcoSel.getRazonSocial() != "") {
+            tamborSel.setAcopiador(AcoSel);
+        }else{
+            AcoSel.setIdProveedor(3000);
             tamborSel.setAcopiador(AcoSel);
         }
         tamborSel.setSenasa(jTFSenasa.getText());

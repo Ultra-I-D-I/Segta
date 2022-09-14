@@ -15,7 +15,7 @@
         </Property>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery(&quot;SELECT p FROM Proveedor p WHERE p.baja = 0 ORDER BY p.idProveedor&quot;)"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery(&quot;SELECT p FROM Proveedor p WHERE p.baja = 0 AND p.razonSocial != &apos;&apos; ORDER BY p.idProveedor&quot;)"/>
       </AuxValues>
     </Component>
     <Component class="java.util.List" name="proveedorList">

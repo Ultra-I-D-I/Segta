@@ -425,9 +425,8 @@ public class JDialogDevoluciones extends javax.swing.JDialog {
         tamborQuery = java.beans.Beans.isDesignTime() ? null : SegTAPUEntityManager.createQuery("SELECT t FROM Tambor t WHERE t.estado = 'devuelto'");
         tamborList.clear();
         tamborList.addAll(tamborQuery.getResultList());
-
-        String estado = tamborSel.getEstado();
-        if (estado == "devuelto" || estado == "Loteado" || estado == "despachado") {
+        
+        if (tamborSel.getEstado().equals("loteado")   || tamborSel.getEstado().equals("devuelto") || tamborSel.getEstado().equals("despachado")) {
             JOptionPane.showMessageDialog(null, "El Tambor ya se encuentra Devuleto, Loteado o Despachado ", "Validación", JOptionPane.WARNING_MESSAGE);
             this.jTFNumero.setText("");
             this.jTFNumero.requestFocus();

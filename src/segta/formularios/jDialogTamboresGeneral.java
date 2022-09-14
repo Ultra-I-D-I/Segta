@@ -65,7 +65,7 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
 
     public jDialogTamboresGeneral(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        qlf = em.createQuery("SELECT t FROM Tambor t Where t.estado != 'devuelto' AND t.idDescarga.fecha BETWEEN '" + FechaInicial() + "' AND '" + Fecha() + "' ORDER BY t.numero");
+        qlf = em.createQuery("SELECT t FROM Tambor t Where t.estado != 'devuelto' AND t.idDescarga.fecha BETWEEN '" + FechaInicial() + "' AND '" + Fecha() + "' AND t.estado != 'homogeneizado'  ORDER BY t.numero");
         initComponents();
         jCBAcopiador.setVisible(false);
 
@@ -234,7 +234,7 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
         jLabel5.setText("GRUPO");
 
         jCBLote.addItem("Todos");
-        jCBLote.addItem("Sin Lote");
+        jCBLote.addItem(" Sin Lote");
 
         jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, loteList, jCBLote);
         bindingGroup.addBinding(jComboBoxBinding);
@@ -908,7 +908,7 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
         Boolean validaFecha = false;
 
         Query ql;
-        queryTxt = "SELECT t FROM Tambor t WHERE 1=1 AND t.estado = 'devuelto'";
+        queryTxt = "SELECT t FROM Tambor t WHERE 1=1 AND t.estado != 'devuelto'";
 
         if (!this.FechaDesde.getText().isEmpty()) {
             if (!this.FechaHasta.getText().isEmpty()) {
@@ -993,11 +993,11 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
         if (secSel.getNombre().equals(" Sin Asignar")) {
             queryTxt = queryTxt + " AND t.idSector is null ";
         }
-        if (!loteSel.getLote().equals("Todos") && !loteSel.getLote().equals("Sin Lote")) {
+        if (!loteSel.getLote().equals("Todos") && !loteSel.getLote().equals(" Sin Lote")) {
             queryTxt = queryTxt + " AND t.idLote=:pLote ";
         }
-        if (loteSel.getLote().equals("Sin Lote")) {
-            queryTxt = queryTxt + " AND t.idLote is null ";
+        if (loteSel.getLote().equals(" Sin Lote")) {
+            queryTxt = queryTxt + " AND t.idLote is null";
         }
 
         if (!cliSel.getRazonSocial().equals("Todos")) {
@@ -1021,7 +1021,7 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
         if (!secSel.getNombre().equals("Todos") && !secSel.getNombre().equals(" Sin Asignar")) {
             ql.setParameter("pSector", secSel);
         }
-        if (!loteSel.getLote().equals("Todos") && !loteSel.getLote().equals("Sin Lote")) {
+        if (!loteSel.getLote().equals("Todos") && !loteSel.getLote().equals(" Sin Lote")) {
             ql.setParameter("pLote", loteSel);
         }
 //         if (loteSel.getLote().equals("Sin Lote")) {
@@ -1039,7 +1039,7 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
             ql.setParameter("pEstado", est);
         }
         if ((!est.equals("en stock")) && (!est.equals("todos")) || !provSel.getRazonSocial().equals("Todos")
-                || !cliSel.getRazonSocial().equals("Todos") || !loteSel.getLote().equals("Todos") && !loteSel.getLote().equals("Sin Lote")
+                || !cliSel.getRazonSocial().equals("Todos") || !loteSel.getLote().equals("Todos") || loteSel.getLote().equals(" Sin Lote")
                 || !secSel.getNombre().equals("Todos") || !colSel.getColor().equals("Todos") || fechaDesde != null
                 || !this.jTFNumero.getText().isEmpty() || !this.jTFSenasa.getText().isEmpty()
                 || !this.jTFContrato.getText().isEmpty() || !Traz.equals("Todos")) {
@@ -1111,6 +1111,7 @@ public class jDialogTamboresGeneral extends javax.swing.JDialog {
                             validacion = true;
                         } else {
                             tamborSel.setIdLote(loteSel);
+                            tamborSel.setEstado("loteado");
                             try {
                                 controladorT.edit(tamborSel);
                             } catch (Exception ex) {

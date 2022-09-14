@@ -528,6 +528,7 @@ public class jDialogDescargas extends javax.swing.JDialog {
     bindingGroup.bind();
 
     pack();
+    setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jBAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAgregarActionPerformed

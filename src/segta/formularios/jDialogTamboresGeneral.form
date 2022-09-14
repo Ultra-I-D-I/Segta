@@ -502,7 +502,7 @@
                 <BindingProperty name="elements" source="loteList" target="jCBLote" targetPath="elements" updateStrategy="0" immediately="false"/>
               </BindingProperties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="jCBLote.addItem(&quot;Todos&quot;);&#xa;jCBLote.addItem(&quot;Sin Lote&quot;);"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="jCBLote.addItem(&quot;Todos&quot;);&#xa;jCBLote.addItem(&quot; Sin Lote&quot;);"/>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
             </Component>
